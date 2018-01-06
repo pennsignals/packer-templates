@@ -1,0 +1,27 @@
+---
+
+- name: Create vault group
+  group: name=vault state=present
+  become: yes
+
+- name: Create vault user
+  user: group=vault name=vault shell=/usr/sbin/nologin state=present
+  become: yes
+
+- name: Download vault
+  get_url: dest=/tmp url=https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip validate_certs=no
+  register: response
+  become: yes
+
+- name: Move vault binary to PATH
+  unarchive: dest=/usr/local/bin mode=+x remote_src=yes src={{ response.dest }}
+  when: response.dest is defined
+  become: yes
+
+- name: Create vault configuration directory
+  file: group=vault owner=vault path=/etc/vault.d state=directory
+  become: yes
+
+- name: Copy vault unit configuration file
+  copy: dest=/lib/systemd/system/vault.service src=vault.service
+  become: yes

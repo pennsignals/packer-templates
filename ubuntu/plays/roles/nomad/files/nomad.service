@@ -1,0 +1,14 @@
+[Unit]
+Description=Nomad Server Agent
+Documentation=https://www.nomadproject.io/
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=nomad
+Group=nomad
+ExecStart=/usr/local/bin/nomad agent -config=/etc/nomad.d
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

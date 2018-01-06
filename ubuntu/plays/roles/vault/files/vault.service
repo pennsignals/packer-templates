@@ -1,0 +1,16 @@
+[Unit]
+Description=Vault Server Agent
+Documentation=https://www.vaultproject.io/
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+# Turn Off Core Dumps
+ExecStartPre=/bin/bash -c 'ulimit -c 0'
+User=vault
+Group=vault
+ExecStart=/usr/local/bin/vault server -config=/etc/vault.d/configuration.hcl
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

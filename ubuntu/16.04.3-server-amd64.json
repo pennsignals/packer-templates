@@ -19,7 +19,7 @@
         "kbd-chooser/method=us<spacebar>",
         "keyboard-configuration/layout=us<spacebar>",
         "keyboard-configuration/variant=us<spacebar>",
-        "netcfg/get_hostname=vagrant",
+        "netcfg/get_hostname=vagrant<spacebar>",
         "noapic<spacebar>",
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
         "--<spacebar><wait><enter><wait>"
@@ -40,6 +40,23 @@
   "post-processors": [
     {
       "type": "vagrant"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'vagrant' | sudo -S env {{ .Vars }} {{ .Path }}",
+      "inline": [
+        "sudo apt-get update",
+        "sudo apt-get install -y python-pip",
+        "sudo pip install ansible",
+        "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/vagrant"
+      ],
+      "type": "shell"
+    },
+    {
+      "playbook_dir": "./plays",
+      "playbook_file": "./plays/master.yml",
+      "type": "ansible-local"
     }
   ]
 }

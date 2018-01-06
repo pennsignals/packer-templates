@@ -1,0 +1,15 @@
+---
+
+- name:
+  user: groups=docker name=vagrant state=present
+  become: yes
+
+- name:
+  uri: return_content=yes url=https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub validate_certs=no
+  register: response
+  become: yes
+
+- name:
+  authorized_key: key={{ response.content }} state=present user=vagrant
+  when: response.content is defined
+  become: yes
