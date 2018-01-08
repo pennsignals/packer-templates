@@ -25,7 +25,6 @@
         "--<spacebar><wait><enter><wait>"
       ],
       "communicator": "ssh",
-      "guest_additions_url": "http://download.virtualbox.org/virtualbox/5.0.24/VBoxGuestAdditions_5.0.24.iso",
       "guest_os_type": "Ubuntu_64",
       "http_directory": "http",
       "iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
