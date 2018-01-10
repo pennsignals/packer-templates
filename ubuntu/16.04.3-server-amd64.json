@@ -34,7 +34,15 @@
       "ssh_password": "vagrant",
       "ssh_username": "vagrant",
       "ssh_wait_timeout": "10000s",
-      "type": "virtualbox-iso"
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{ .Name }}",
+          "--memory",
+          "2048"
+        ]
+      ]
     }
   ],
   "post-processors": [
@@ -54,9 +62,6 @@
       "type": "shell"
     },
     {
-      "extra_arguments": [
-        "-vvv"
-      ],
       "playbook_dir": "./plays",
       "playbook_file": "./plays/master.yml",
       "type": "ansible-local"

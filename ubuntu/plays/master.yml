@@ -3,6 +3,7 @@
 - hosts: all
   roles:
   - common
+  - logging
   - docker
   - vagrant
   - consul
