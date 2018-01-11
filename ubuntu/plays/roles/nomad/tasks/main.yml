@@ -28,3 +28,7 @@
 - name: Copy nomad unit configuration file
   copy: dest=/lib/systemd/system/nomad.service src=nomad.service
   become: yes
+
+- name:
+  systemd: daemon_reload=yes enabled=yes name=nomad state=started
+  become: yes

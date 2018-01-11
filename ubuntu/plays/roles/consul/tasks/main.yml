@@ -29,6 +29,10 @@
   copy: dest=/lib/systemd/system/consul.service src=consul.service
   become: yes
 
+- name:
+  systemd: daemon_reload=yes enabled=yes name=consul state=started
+  become: yes
+
 - name: Copy dnsmasq consul configuration file
   copy: dest=/etc/dnsmasq.d/10-consul src=10-consul
   become: yes

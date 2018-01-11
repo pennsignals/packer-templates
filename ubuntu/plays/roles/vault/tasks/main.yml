@@ -25,3 +25,7 @@
 - name: Copy vault unit configuration file
   copy: dest=/lib/systemd/system/vault.service src=vault.service
   become: yes
+
+- name:
+  systemd: daemon_reload=yes enabled=yes name=vault state=started
+  become: yes
