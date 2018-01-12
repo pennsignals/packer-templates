@@ -24,6 +24,7 @@
 
 - name: Install VBoxGuestAdditions
   shell: /bin/bash /media/VBoxGuestAdditions/VBoxLinuxAdditions.run
+  ignore_errors: yes
   become: yes
 
 - name: Remove vagrant user public key
