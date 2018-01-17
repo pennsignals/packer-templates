@@ -25,6 +25,17 @@ To enable the logger during the `build` process, set the `PACKER_LOG` environmen
 
 	$ PACKER_LOG=1 packer build 16.04.3-server-amd64.json
 
+## Networking
+
+### Forwarded Ports
+
+| Port   | Protocol | Description     |
+|--------|----------|-----------------|
+| `4646` | TCP      | Nomad HTTP API  |
+| `5601` | TCP      | Kibana UI       |
+| `8200` | TCP      | Vault HTTP API  |
+| `8500` | TCP      | Consul HTTP API |
+
 ## License
 
 [pennsignals](https://github.com/pennsignals) @ [MIT](https://github.com/pennsignals/packer-templates/blob/master/LICENSE)
