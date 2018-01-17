@@ -1,42 +1,78 @@
 ---
 
 - name: Create consul group
-  group: name=consul state=present
+  group:
+    name: consul
+    state: present
   become: yes
 
 - name: Create consul user
-  user: group=consul name=consul shell=/usr/sbin/nologin state=present
+  user:
+    group: consul
+    name: consul
+    shell: /usr/sbin/nologin
+    state: present
   become: yes
 
 - name: Download consul
-  get_url: dest=/tmp url=https://releases.hashicorp.com/consul/1.0.0/consul_1.0.0_linux_amd64.zip validate_certs=no
+  get_url:
+    dest: /tmp
+    url: https://releases.hashicorp.com/consul/1.0.0/consul_1.0.0_linux_amd64.zip
+    validate_certs: no
   register: response
   become: yes
 
-- name: Move consul binary to PATH
-  unarchive: dest=/usr/local/bin mode=+x remote_src=yes src={{ response.dest }}
+- name: Move consul binary to executable directory
+  unarchive:
+    dest: /usr/local/bin
+    mode: +x
+    remote_src: yes
+    src: "{{ response.dest }}"
   when: response.dest is defined
   become: yes
 
 - name: Create consul configuration and data directories
-  file: group=consul owner=consul path={{ item }} recurse=yes state=directory
+  file:
+    group: consul
+    owner: consul
+    path: "{{ item }}"
+    recurse: yes
+    state: directory
   with_items:
   - /etc/consul.d
   - /var/lib/consul/data
   become: yes
 
-- name: Copy consul unit configuration file
-  copy: dest=/lib/systemd/system/consul.service src=consul.service
+- name: Copy consul agent configuration file
+  template:
+    dest: /etc/consul.d/server.json
+    group: consul
+    owner: consul
+    src: server.json.j2
   become: yes
 
-- name:
-  systemd: daemon_reload=yes enabled=yes name=consul state=started
+- name: Copy consul unit configuration file
+  copy:
+    dest: /lib/systemd/system/consul.service
+    src: consul.service
+  become: yes
+
+- name: Restart consul service and enable it on reboot
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    name: consul
+    state: started
   become: yes
 
 - name: Copy dnsmasq consul configuration file
-  copy: dest=/etc/dnsmasq.d/10-consul src=10-consul
+  copy:
+    dest: /etc/dnsmasq.d/10-consul
+    src: 10-consul
   become: yes
 
-- name: Restart service dnsmasq
-  systemd: name=dnsmasq state=restarted
+- name: Restart dnsmasq service
+  systemd:
+    name: dnsmasq
+    state: restarted
   become: yes

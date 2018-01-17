@@ -9,7 +9,7 @@ After=network-online.target
 ExecStartPre=/bin/bash -c 'ulimit -c 0'
 User=vault
 Group=vault
-ExecStart=/usr/local/bin/vault server -dev
+ExecStart=/usr/local/bin/vault server -config=/etc/vault.d/server.hcl
 Restart=always
 
 [Install]

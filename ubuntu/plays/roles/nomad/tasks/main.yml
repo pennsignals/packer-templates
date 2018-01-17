@@ -1,34 +1,68 @@
 ---
 
 - name: Create nomad group
-  group: name=nomad state=present
+  group:
+    name: nomad
+    state: present
   become: yes
 
 - name: Create nomad user
-  user: groups=docker,nomad name=nomad shell=/usr/sbin/nologin state=present
+  user:
+    groups: docker,nomad
+    name: nomad
+    shell: /usr/sbin/nologin
+    state: present
   become: yes
 
 - name: Download nomad
-  get_url: dest=/tmp url=https://releases.hashicorp.com/nomad/0.7.0/nomad_0.7.0_linux_amd64.zip validate_certs=no
+  get_url:
+    dest: /tmp
+    url: https://releases.hashicorp.com/nomad/0.7.0/nomad_0.7.0_linux_amd64.zip
+    validate_certs: no
   register: response
   become: yes
 
-- name: Move nomad binary to PATH
-  unarchive: dest=/usr/local/bin mode=+x remote_src=yes src={{ response.dest }}
+- name: Move nomad binary to executable directory
+  unarchive:
+    dest: /usr/local/bin
+    mode: +x
+    remote_src: yes
+    src: "{{ response.dest }}"
   when: response.dest is defined
   become: yes
 
 - name: Create nomad configuration and data directories
-  file: group=nomad owner=nomad path={{ item }} recurse=yes state=directory
+  file:
+    group: nomad
+    owner: nomad
+    path: "{{ item }}"
+    recurse: yes
+    state: directory
   with_items:
   - /etc/nomad.d
   - /var/lib/nomad/data
   become: yes
 
 - name: Copy nomad unit configuration file
-  copy: dest=/lib/systemd/system/nomad.service src=nomad.service
+  copy:
+    dest: /lib/systemd/system/nomad.service
+    src: nomad.service
   become: yes
 
-- name:
-  systemd: daemon_reload=yes enabled=yes name=nomad state=started
+- include_tasks: policy.yml
+
+- name: Copy nomad agent configuration file
+  template:
+    dest: /etc/nomad.d/server.hcl
+    group: nomad
+    owner: nomad
+    src: server.hcl.j2
+  become: yes
+
+- name: Restart nomad service and enable it on reboot
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    name: nomad
+    state: started
   become: yes

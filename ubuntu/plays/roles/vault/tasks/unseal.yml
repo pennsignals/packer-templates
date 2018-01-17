@@ -1,0 +1,58 @@
+---
+
+# The following tasks check the initialization status of the Vault
+# service and performs an unseal if needed. The unseal keys and initial
+# root token are written to Consul.
+
+- name: Check initialization status of Vault
+  shell: /usr/bin/curl http://127.0.0.1:8200/v1/sys/init | jq -r .initialized
+  register: initialized
+  become: yes
+
+- name: Initialize Vault
+  command: /usr/local/bin/vault init
+  environment:
+    VAULT_ADDR: http://127.0.0.1:8200
+  when: not initialized.stdout | bool
+  register: status
+  become: yes
+
+- name: Write Unseal Keys to path in key-value store
+  consul_kv:
+    key: bootstrap/vault/unseal-key-{{ item.0 }}
+    state: present
+    value: "{{ item.1.split()[-1] }}"
+  when: status.stdout_lines is defined and item.1.startswith('Unseal')
+  with_indexed_items: "{{ status.stdout_lines }}"
+  become: yes
+
+- name: Write Initial Root Token to path in key-value store
+  consul_kv:
+    key: bootstrap/vault/initial-root-token
+    state: present
+    value: "{{ item.1.split()[-1] }}"
+  when: status.stdout_lines is defined and item.1.startswith('Initial Root Token')
+  with_indexed_items: "{{ status.stdout_lines }}"
+  become: yes
+
+- name: Check state of Vault
+  command: /usr/local/bin/vault status
+  environment:
+    VAULT_ADDR: http://127.0.0.1:8200
+  ignore_errors: yes
+  register: status
+  become: yes
+
+- name: Unseal Vault
+  command: /usr/local/bin/vault unseal {{ item }}
+  environment:
+    VAULT_ADDR: http://127.0.0.1:8200
+  with_consul_kv:
+  - bootstrap/vault/unseal-key-0
+  - bootstrap/vault/unseal-key-1
+  - bootstrap/vault/unseal-key-2
+  when: >
+    status.rc == 2 and
+    status.stdout_lines is defined and
+    status.stdout_lines[0].split(':')[-1].strip() | bool
+  become: yes

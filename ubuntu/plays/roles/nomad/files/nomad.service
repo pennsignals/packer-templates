@@ -7,7 +7,7 @@ After=network-online.target
 [Service]
 User=nomad
 Group=nomad
-ExecStart=/usr/local/bin/nomad agent -bind 0.0.0.0 -dev
+ExecStart=/usr/local/bin/nomad agent -config=/etc/nomad.d
 Restart=always
 
 [Install]

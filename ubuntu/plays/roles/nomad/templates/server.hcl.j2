@@ -1,0 +1,23 @@
+bind_addr = "0.0.0.0"
+
+client {
+  enabled = true
+}
+
+data_dir = "/var/lib/nomad/data"
+
+leave_on_interrupt = true
+
+leave_on_terminate = true
+
+server {
+  bootstrap_expect = {{ bootstrap_expect }}
+  enabled          = true
+}
+
+vault {
+  address          = "http://vault.service.consul:8200"
+  create_from_role = "nomad-cluster"
+  enabled          = true
+  token            = "{{ vault_token }}"
+}

@@ -1,14 +1,28 @@
 ---
 
-- name: Install required packages
-  apt: name={{ item }} state=present update_cache=yes
+- name: Install required software packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
   with_items:
   - apt-transport-https
   - ca-certificates
   - curl
   - dnsmasq
+  - git
   - gnupg2
+  - jq
   - software-properties-common
   - systemd
   - unzip
+  become: yes
+
+- name: Install required Python modules
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - python-consul
+  - requests
   become: yes

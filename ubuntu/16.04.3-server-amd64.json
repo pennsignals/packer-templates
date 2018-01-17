@@ -63,8 +63,10 @@
       "type": "shell"
     },
     {
-      "playbook_dir": "./plays",
-      "playbook_file": "./plays/master.yml",
+      "clean_staging_directory": false,
+      "staging_directory": "/home/vagrant/packer-provisioner-ansible-local",
+      "playbook_dir": "{{ template_dir }}/plays",
+      "playbook_file": "{{ template_dir }}/plays/before_restart.yml",
       "type": "ansible-local"
     }
   ],
