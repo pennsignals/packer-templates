@@ -26,19 +26,3 @@
   - /usr/local/bin/vault write /auth/token/roles/nomad-cluster @{{ response.results[1].dest }}
   when: response.results is defined
   become: yes
-
-- name: Retrieving Nomad Token Role based Token
-  command: /usr/local/bin/vault token-create -policy nomad-server -period 72h -orphan
-  environment:
-    VAULT_ADDR: http://127.0.0.1:8200
-    VAULT_TOKEN: "{{ root_token }}"
-  register: response
-  become: yes
-
-  # Nomad Token Role token
-  # https://www.nomadproject.io/docs/vault-integration/index.html#retrieving-the-token-role-based-token
-- set_fact:
-    vault_token: "{{ response.stdout_lines[2].split()[-1] }}"
-  when: >
-    response.rc == 0 and
-    response.stdout_lines is defined

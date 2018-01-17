@@ -19,5 +19,5 @@ vault {
   address          = "http://active.vault.service.consul:8200"
   create_from_role = "nomad-cluster"
   enabled          = true
-  token            = "{{ vault_token }}"
+  token            = "{{ root_token }}"
 }
