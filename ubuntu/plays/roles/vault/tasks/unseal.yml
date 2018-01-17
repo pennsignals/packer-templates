@@ -6,6 +6,7 @@
 
 - name: Check initialization status of Vault
   shell: /usr/bin/curl http://127.0.0.1:8200/v1/sys/init | jq -r .initialized
+  ignore_errors: yes
   register: initialized
   become: yes
 

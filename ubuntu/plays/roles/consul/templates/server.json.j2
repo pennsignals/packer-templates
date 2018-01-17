@@ -3,6 +3,7 @@
   "bootstrap_expect": {{ consul_bootstrap_expect }},
   "client_addr": "0.0.0.0",
   "data_dir": "/var/lib/consul/data",
+  "enable_script_checks": true,
   "leave_on_terminate": true,
   "server": {{ consul_server | to_json }},
   "skip_leave_on_interrupt": true,
