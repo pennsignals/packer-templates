@@ -11,13 +11,12 @@ leave_on_interrupt = true
 leave_on_terminate = true
 
 server {
-  bootstrap_expect = {{ bootstrap_expect }}
+  bootstrap_expect = {{ nomad_bootstrap_expect }}
   enabled          = true
 }
 
 vault {
-  address          = "http://active.vault.service.consul:8200"
-  create_from_role = "nomad-cluster"
-  enabled          = true
-  token            = "{{ root_token }}"
+  address = "http://vault.service.consul:8200"
+  enabled = true
+  token   = "{{ vault_token }}"
 }

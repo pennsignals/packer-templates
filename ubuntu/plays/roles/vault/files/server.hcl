@@ -6,5 +6,7 @@ listener "tcp" {
 }
 
 storage "consul" {
-  address = "127.0.0.1:8500"
+  address            = "127.0.0.1:8500"
+  disable_clustering = "true"
+  scheme             = "http"
 }

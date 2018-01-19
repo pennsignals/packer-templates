@@ -5,3 +5,12 @@
   - import_role:
       name: vault
       tasks_from: unseal
+  - pause:
+      seconds: 60
+  - name: Restart nomad service and enable it on reboot
+    systemd:
+      daemon_reload: yes
+      enabled: yes
+      name: nomad
+      state: started
+    become: yes

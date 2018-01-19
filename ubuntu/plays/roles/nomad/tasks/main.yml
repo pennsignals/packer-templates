@@ -49,7 +49,8 @@
     src: nomad.service
   become: yes
 
-- include_tasks: policy.yml
+- set_fact:
+    vault_token: "{{ lookup('consul_kv', 'bootstrap/vault/initial-root-token') }}"
 
 - name: Copy nomad agent configuration file
   template:
@@ -57,12 +58,4 @@
     group: nomad
     owner: nomad
     src: server.hcl.j2
-  become: yes
-
-- name: Restart nomad service and enable it on reboot
-  systemd:
-    daemon_reload: yes
-    enabled: yes
-    name: nomad
-    state: started
   become: yes
