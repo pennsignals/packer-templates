@@ -21,12 +21,14 @@ The following software is required to build images using Packer and export them 
 
 To generate a machine image using Packer, use the [`build`](https://www.packer.io/docs/commands/build.html) command. The packer build command takes a template and runs all the builds within it to generate a set of artifacts.
 
+By default, the `build` command runs all the builds within it. To build only a specific set of builds, use the `-only` flag followed by a comma-separated list of builder names (e.g., `virtualbox-iso`).
+
 	$ cd ubuntu
-	$ packer build 16.04.3-server-amd64.json
+	$ packer build -only=virtualbox-iso 16.04.3-server-amd64.json
 
 To enable the logger during the `build` process, set the `PACKER_LOG` environment variable to any value other than "" (empty string) or "0".
 
-	$ PACKER_LOG=1 packer build 16.04.3-server-amd64.json
+	$ PACKER_LOG=1 packer build -only=virtualbox-iso 16.04.3-server-amd64.json
 
 If the Packer build is successful, then it creates a [Vagrant Box](https://www.vagrantup.com/docs/boxes.html) in the [`builds`](builds) directory.
 
@@ -46,6 +48,10 @@ To SSH into the `server` node, run the following command:
 To SSH into the `client` node, run the following command:
 
 	$ vagrant ssh client
+
+### Custom `Vagrantfile` Configuration
+
+Currently, the [`Vagrantfile`](Vagrantfile) contains two configuration blocks. The first configuration block defines the default configuration for the `server` node and the `client` node. The second configuration block is for any custom configurations such as [port forwarding](https://www.vagrantup.com/docs/networking/forwarded_ports.html).
 
 ## User Interfaces
 

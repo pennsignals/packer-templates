@@ -29,3 +29,7 @@ Vagrant.configure("2") do |config|
     end
   end
 end
+
+# All custom Vagrant configuration is done below.
+Vagrant.configure("2") do |config|
+end
