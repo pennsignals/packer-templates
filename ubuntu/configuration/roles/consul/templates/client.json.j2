@@ -1,0 +1,12 @@
+{
+  "bind_addr": "{{ ansible_enp0s8.ipv4.address }}",
+  "client_addr": "0.0.0.0",
+  "data_dir": "/var/lib/consul/data",
+  "enable_script_checks": true,
+  "leave_on_terminate": true,
+  "retry_join": [
+    "172.20.20.11"
+  ],
+  "server": false,
+  "skip_leave_on_interrupt": true
+}

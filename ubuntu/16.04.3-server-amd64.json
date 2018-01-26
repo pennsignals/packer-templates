@@ -24,16 +24,15 @@
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
         "--<spacebar><wait><enter><wait>"
       ],
-      "communicator": "ssh",
       "guest_os_type": "Ubuntu_64",
       "http_directory": "http",
-      "iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
-      "iso_checksum_type": "sha256",
-      "iso_url": "http://releases.ubuntu.com/16.04.3/ubuntu-16.04.3-server-amd64.iso",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_url": "{{ user `iso_url` }}",
       "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
       "ssh_password": "{{ user `ssh_password` }}",
       "ssh_username": "{{ user `ssh_username` }}",
-      "ssh_wait_timeout": "10000s",
+      "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
       "type": "virtualbox-iso",
       "vboxmanage": [
         [
@@ -43,12 +42,53 @@
           "{{ user `memory` }}"
         ]
       ]
+    },
+    {
+      "boot_command": [
+        "<enter><wait><f6><esc>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "/install/vmlinuz<spacebar>",
+        "auto<spacebar>",
+        "console-setup/ask_detect=false<spacebar>",
+        "debconf/frontend=noninteractive<spacebar>",
+        "debian-installer/framebuffer=false<spacebar>",
+        "debian-installer/locale=en_US.UTF-8<spacebar>",
+        "debian-installer=en_US.UTF-8<spacebar>",
+        "grub-installer/bootdev=/dev/sda<spacebar>",
+        "initrd=/install/initrd.gz<spacebar>",
+        "kbd-chooser/method=us<spacebar>",
+        "keyboard-configuration/layout=us<spacebar>",
+        "keyboard-configuration/variant=us<spacebar>",
+        "netcfg/get_hostname=vagrant<spacebar>",
+        "noapic<spacebar>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
+        "--<spacebar><wait><enter><wait>"
+      ],
+      "http_directory": "http",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "keep_registered": true,
+      "remote_host": "{{ user `remote_host` }}",
+      "remote_password": "{{ user `remote_password` }}",
+      "remote_type": "esx5",
+      "remote_username": "{{ user `remote_username` }}",
+      "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
+      "tools_upload_flavor": "linux",
+      "type": "vmware-iso",
+      "vnc_bind_address": "0.0.0.0"
     }
   ],
   "post-processors": [
     {
-      "type": "vagrant",
-      "vagrantfile_template": "{{ template_dir }}/Vagrantfile"
+      "output": "{{ template_dir }}/../builds/packer_{{ .BuildName }}_{{ .Provider }}.box",
+      "type": "vagrant"
     }
   ],
   "provisioners": [
@@ -64,15 +104,26 @@
     },
     {
       "clean_staging_directory": false,
+      "extra_arguments": [
+        "--skip-tags",
+        "bootstrap,client,server"
+      ],
+      "playbook_dir": "{{ template_dir }}/configuration",
+      "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
       "staging_directory": "/home/vagrant/packer-provisioner-ansible-local",
-      "playbook_dir": "{{ template_dir }}/plays",
-      "playbook_file": "{{ template_dir }}/plays/before_restart.yml",
       "type": "ansible-local"
     }
   ],
   "variables": {
+    "iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
+    "iso_checksum_type": "sha256",
+    "iso_url": "http://releases.ubuntu.com/16.04.3/ubuntu-16.04.3-server-amd64.iso",
     "memory": "2048",
+    "remote_host": "",
+    "remote_password": "",
+    "remote_username": "",
     "ssh_password": "vagrant",
-    "ssh_username": "vagrant"
+    "ssh_username": "vagrant",
+    "ssh_wait_timeout": "10000s"
   }
 }

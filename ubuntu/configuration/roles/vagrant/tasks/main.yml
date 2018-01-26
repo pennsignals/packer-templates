@@ -1,0 +1,61 @@
+---
+
+- name: Add vagrant user to docker group
+  user:
+    groups: docker
+    name: vagrant
+    state: present
+  become: yes
+
+- name: Download vagrant user public key
+  uri:
+    dest: /tmp
+    return_content: yes
+    url: https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub
+  register: response
+
+- name: Add vagrant user public key to authorized_keys file
+  authorized_key:
+    key: "{{ response.content }}"
+    state: present
+    user: vagrant
+  when: response.content is defined
+  become: yes
+
+- name: Create VBoxGuestAdditions directory
+  file:
+    path: /media/VBoxGuestAdditions
+    state: directory
+  become: yes
+
+- name: Mount VBoxGuestAdditions image
+  mount:
+    fstype: iso9660
+    opts: loop,ro
+    path: /media/VBoxGuestAdditions
+    src: "{{ ansible_env.HOME }}/VBoxGuestAdditions.iso"
+    state: mounted
+  become: yes
+
+- name: Install VBoxGuestAdditions
+  shell: /bin/bash /media/VBoxGuestAdditions/VBoxLinuxAdditions.run
+  ignore_errors: yes
+  become: yes
+
+- name: Remove vagrant user public key
+  file:
+    path: /tmp/vagrant.pub
+    state: absent
+  become: yes
+
+- name: Unmount VBoxGuestAdditions image
+  mount:
+    path: /media/VBoxGuestAdditions
+    state: unmounted
+  become: yes
+
+# - name: Remove VBoxGuestAdditions image
+#   file:
+#     path: "{{ ansible_env.HOME }}/VBoxGuestAdditions.iso"
+#     state: absent
+#   become: yes

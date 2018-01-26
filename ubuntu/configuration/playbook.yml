@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  roles:
+  - common
+  - firewall
+  - docker
+  - vagrant
+  - consul
+  - vault
+  - nomad

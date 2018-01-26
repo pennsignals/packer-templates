@@ -1,0 +1,6 @@
+---
+
+- ufw:
+    policy: allow
+    state: enabled
+  become: yes

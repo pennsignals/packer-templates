@@ -1,0 +1,25 @@
+---
+
+- name: Install required software packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+  - apt-transport-https
+  - ca-certificates
+  - dnsmasq
+  - git
+  - python-pip
+  - software-properties-common
+  - unzip
+  become: yes
+
+- name: Install required Python modules
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - python-consul
+  - requests
+  become: yes
