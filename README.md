@@ -28,10 +28,33 @@ To enable the logger during the `build` process, set the `PACKER_LOG` environmen
 
 	$ PACKER_LOG=1 packer build 16.04.3-server-amd64.json
 
+If the Packer build is successful, then it creates a [Vagrant Box](https://www.vagrantup.com/docs/boxes.html) in the `builds` directory.
+
 ### Creating a Vagrant Box
 
-	$ cd ..
+The [`Vagrantfile`](Vagrantfile) contains [multiple guest machine definitions](https://www.vagrantup.com/docs/multi-machine/): `server` and `client`, respectively. Both the `server` node and the `client` node contain the `consul`, `nomad`, and `vault` binaries; the main difference is their agent configurations. The agents in the `server` node run in server mode, whereas the agents in the `client` node run in client mode.
+
+	$ cd packer-templates
 	$ vagrant up
+
+If the `vagrant up` command is successful, then both the `server` node and `client` node are accessible via SSH.
+
+To SSH into the `server` node, run the following command:
+
+	$ vagrant ssh server
+
+To SSH into the `client` node, run the following command:
+
+	$ vagrant ssh client
+
+## User Interfaces
+
+The `sever` node runs both the Consul and Nomad web user interfaces. To access them, visit the following links in a web browser:
+
+| Consul                                                                                                                                       | Nomad                                                                                                                                        |
+|----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| ![screen shot 2018-01-26 at 1 59 28 pm](https://user-images.githubusercontent.com/2184329/35455767-2ae43ea2-02a1-11e8-966e-d335f8c6df10.png) | ![screen shot 2018-01-26 at 1 59 36 pm](https://user-images.githubusercontent.com/2184329/35455779-345fda18-02a1-11e8-84b8-9c73975dd534.png) |
+| [http://localhost:8500/](http://localhost:8500/)                                                                                             | [http://localhost:4646/](http://localhost:4646/)                                                                                             |
 
 ## Networking
 
