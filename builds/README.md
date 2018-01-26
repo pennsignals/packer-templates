@@ -1,0 +1,1 @@
+This directory contains any Packer [Artifacts](https://www.packer.io/docs/basics/terminology.html#artifacts) created using Packer [Post-Processors](https://www.packer.io/docs/post-processors/index.html). It is intentionally empty.
