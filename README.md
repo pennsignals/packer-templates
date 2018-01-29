@@ -57,10 +57,10 @@ Currently, the [`Vagrantfile`](Vagrantfile) contains two configuration blocks. T
 
 The `sever` node runs both the Consul and Nomad web user interfaces. To access them, visit the following links in a web browser:
 
-| Consul                                                                                                                                       | Nomad                                                                                                                                        |
-|----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| ![screen shot 2018-01-26 at 1 59 28 pm](https://user-images.githubusercontent.com/2184329/35455767-2ae43ea2-02a1-11e8-966e-d335f8c6df10.png) | ![screen shot 2018-01-26 at 1 59 36 pm](https://user-images.githubusercontent.com/2184329/35455779-345fda18-02a1-11e8-84b8-9c73975dd534.png) |
-| [http://localhost:8500/](http://localhost:8500/)                                                                                             | [http://localhost:4646/](http://localhost:4646/)                                                                                             |
+| Consul                                                                                                                                       | Nomad                                                                                                                                        | Kibana                                                                                                                                       |
+|----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| ![screen shot 2018-01-26 at 1 59 28 pm](https://user-images.githubusercontent.com/2184329/35455767-2ae43ea2-02a1-11e8-966e-d335f8c6df10.png) | ![screen shot 2018-01-26 at 1 59 36 pm](https://user-images.githubusercontent.com/2184329/35455779-345fda18-02a1-11e8-84b8-9c73975dd534.png) | ![screen shot 2018-01-29 at 2 05 11 pm](https://user-images.githubusercontent.com/2184329/35528955-7d24c250-04fd-11e8-9a36-426c257a2321.png) |
+| [http://localhost:8500/](http://localhost:8500/)                                                                                             | [http://localhost:4646/](http://localhost:4646/)                                                                                             | [http://localhost:5601](http://localhost:5601)                                                                                               |
 
 ## Networking
 
@@ -68,12 +68,12 @@ The `sever` node runs both the Consul and Nomad web user interfaces. To access t
 
 The following services are accessible via a web browser on their respective ports:
 
-| Port   | Protocol | Description     |
-|--------|----------|-----------------|
-| `4646` | TCP      | Nomad HTTP API  |
-| `5601` | TCP      | Kibana UI       |
-| `8200` | TCP      | Vault HTTP API  |
-| `8500` | TCP      | Consul HTTP API |
+| Port   | Protocol | Description                                                  |
+|--------|----------|--------------------------------------------------------------|
+| `4646` | TCP      | [Nomad HTTP API](https://www.nomadproject.io/api/index.html) |
+| `5601` | TCP      | Kibana UI                                                    |
+| `8200` | TCP      | [Vault HTTP API](https://www.vaultproject.io/api/index.html) |
+| `8500` | TCP      | [Consul HTTP API](https://www.consul.io/api/index.html)      |
 
 **Note:** By default, the Vagrant box does *not* enable port correction; therefore, [port collisions](https://www.vagrantup.com/docs/networking/forwarded_ports.html#port-collisions-and-correction) are not auto-corrected. This behavior is intentional as the services running in the virtual machine are configured to run on their default ports.
 

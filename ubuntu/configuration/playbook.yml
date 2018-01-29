@@ -9,3 +9,4 @@
   - consul
   - vault
   - nomad
+  - logging

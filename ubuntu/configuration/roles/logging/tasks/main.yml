@@ -6,14 +6,21 @@
     state: present
     update_cache: yes
   become: yes
+  tags:
+  - client
 
 - name: Add JAVA_HOME environment variable
   lineinfile:
     insertafter: EOF
-    line: "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64"
+    line: "{{ item }}"
     path: /etc/environment
     state: present
+  with_items:
+  - ES_HEAP_SIZE=64M
+  - JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
   become: yes
+  tags:
+  - client
 
 - name: Add Elastic Stack GPG key
   apt_key:
@@ -23,33 +30,61 @@
   become: yes
 
 - name: Add Elastic Stack stable repository
-  shell: echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/6.x/apt stable main
   become: yes
 
-- name: Install Elastic Stack packages
+- name: Install Elastic Stack client packages
   apt:
     name: "{{ item }}"
     state: present
     update_cache: yes
   with_items:
   - elasticsearch
-  - kibana
   - logstash
   become: yes
+  tags:
+  - client
+
+- name: Install Elastic Stack server packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+  - kibana
+  become: yes
+  tags:
+  - server
 
 - name: Bind Kibana server host to default gateway
   lineinfile:
     insertafter: EOF
     line: |
-      server.host: "0.0.0.0"
+      elasticsearch.url: http://172.20.20.10:9200
+      server.host: 0.0.0.0
     path: /etc/kibana/kibana.yml
   become: yes
+  tags:
+  - server
+
+- name: Bind Elasticsearch server host to default gateway
+  lineinfile:
+    insertafter: EOF
+    line: |
+      network.host: 0.0.0.0
+    path: /etc/elasticsearch/elasticsearch.yml
+  become: yes
+  tags:
+  - client
 
 - name: Copy syslog pipeline configuration
   copy:
     dest: /etc/logstash/conf.d/syslog.conf
     src: syslog.conf
   become: yes
+  tags:
+  - client
 
 - name: Start Elastic Stack services and enable them on reboot
   systemd:
@@ -59,6 +94,19 @@
     state: started
   with_items:
   - elasticsearch
-  - kibana
   - logstash
   become: yes
+  tags:
+  - client
+
+- name: Start Elastic Stack services and enable them on reboot
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    name: "{{ item }}"
+    state: started
+  with_items:
+  - kibana
+  become: yes
+  tags:
+  - server
