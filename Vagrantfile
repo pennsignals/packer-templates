@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
     server.vm.network "forwarded_port", guest: 8500, host: 8500
     server.vm.network "private_network", ip: "172.20.20.11"
 
-    server.vm.provision "ansible_local" do |ansible|
+    server.vm.provision "ansible_local", run: "always" do |ansible|
       ansible.playbook = "playbook.yml"
       ansible.provisioning_path = "/home/vagrant/packer-provisioner-ansible-local"
       ansible.tags = ["bootstrap", "server"]
