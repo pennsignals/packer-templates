@@ -10,14 +10,13 @@
   - client
 
 - name: Add JAVA_HOME environment variable
-  lineinfile:
+  blockinfile:
+    block: |
+      ES_HEAP_SIZE=64M
+      JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
     insertafter: EOF
-    line: "{{ item }}"
     path: /etc/environment
     state: present
-  with_items:
-  - ES_HEAP_SIZE=64M
-  - JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
   become: yes
   tags:
   - client
@@ -58,22 +57,24 @@
   - server
 
 - name: Bind Kibana server host to default gateway
-  lineinfile:
-    insertafter: EOF
-    line: |
+  blockinfile:
+    block: |
       elasticsearch.url: http://172.20.20.10:9200
       server.host: 0.0.0.0
+    insertafter: EOF
     path: /etc/kibana/kibana.yml
+    state: present
   become: yes
   tags:
   - server
 
 - name: Bind Elasticsearch server host to default gateway
-  lineinfile:
-    insertafter: EOF
-    line: |
+  blockinfile:
+    block: |
       network.host: 0.0.0.0
+    insertafter: EOF
     path: /etc/elasticsearch/elasticsearch.yml
+    state: present
   become: yes
   tags:
   - client
