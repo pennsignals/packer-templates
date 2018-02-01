@@ -68,12 +68,12 @@ The `sever` node runs both the Consul and Nomad web user interfaces. To access t
 
 The following services are accessible via a web browser on their respective ports:
 
-| Port   | Protocol | Description                                                  |
-|--------|----------|--------------------------------------------------------------|
-| `4646` | TCP      | [Nomad HTTP API](https://www.nomadproject.io/api/index.html) |
-| `5601` | TCP      | Kibana UI                                                    |
-| `8200` | TCP      | [Vault HTTP API](https://www.vaultproject.io/api/index.html) |
-| `8500` | TCP      | [Consul HTTP API](https://www.consul.io/api/index.html)      |
+| Port   | Protocol | Description                                                                |
+|--------|----------|----------------------------------------------------------------------------|
+| `4646` | TCP      | [Nomad HTTP API](https://www.nomadproject.io/api/index.html)               |
+| `5601` | TCP      | [Kibana UI](https://www.elastic.co/guide/en/kibana/current/dashboard.html) |
+| `8200` | TCP      | [Vault HTTP API](https://www.vaultproject.io/api/index.html)               |
+| `8500` | TCP      | [Consul HTTP API](https://www.consul.io/api/index.html)                    |
 
 **Note:** By default, the Vagrant box does *not* enable port correction; therefore, [port collisions](https://www.vagrantup.com/docs/networking/forwarded_ports.html#port-collisions-and-correction) are not auto-corrected. This behavior is intentional as the services running in the virtual machine are configured to run on their default ports.
 
