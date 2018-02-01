@@ -4,11 +4,18 @@
 # service and performs an unseal if needed. The unseal keys and initial
 # root token are written to Consul.
 
+- name: Wait until a Consul leader is elected
+  uri:
+    return_content: yes
+    url: http://127.0.0.1:8500/v1/status/leader
+  register: response
+  retries: 10
+  until: response.json is defined and response.json != ""
+
 - name: Check initialization status of Vault
   uri:
     return_content: yes
     url: http://127.0.0.1:8200/v1/sys/init
-  ignore_errors: yes
   register: response
 
 - name: Initialize Vault
