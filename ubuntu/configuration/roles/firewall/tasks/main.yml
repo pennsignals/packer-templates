@@ -1,6 +1,7 @@
 ---
 
-- ufw:
+- name: Allow all incoming/outgoing network traffic
+  ufw:
     policy: allow
     state: enabled
   become: yes

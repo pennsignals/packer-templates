@@ -19,8 +19,8 @@
     key: "{{ response.content }}"
     state: present
     user: vagrant
-  when: response.content is defined
   become: yes
+  when: response.content is defined
 
 - name: Create VBoxGuestAdditions directory
   file:
@@ -39,8 +39,8 @@
 
 - name: Install VBoxGuestAdditions
   shell: /bin/bash /media/VBoxGuestAdditions/VBoxLinuxAdditions.run
-  ignore_errors: yes
   become: yes
+  ignore_errors: yes
 
 - name: Remove vagrant user public key
   file:
@@ -53,9 +53,3 @@
     path: /media/VBoxGuestAdditions
     state: unmounted
   become: yes
-
-# - name: Remove VBoxGuestAdditions image
-#   file:
-#     path: "{{ ansible_env.HOME }}/VBoxGuestAdditions.iso"
-#     state: absent
-#   become: yes

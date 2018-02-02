@@ -38,23 +38,23 @@
     name: "{{ item }}"
     state: present
     update_cache: yes
-  with_items:
-  - elasticsearch
-  - logstash
   become: yes
   tags:
   - client
+  with_items:
+  - elasticsearch
+  - logstash
 
 - name: Install Elastic Stack server packages
   apt:
     name: "{{ item }}"
     state: present
     update_cache: yes
-  with_items:
-  - kibana
   become: yes
   tags:
   - server
+  with_items:
+  - kibana
 
 - name: Bind Kibana server host to default gateway
   blockinfile:
@@ -93,12 +93,12 @@
     enabled: yes
     name: "{{ item }}"
     state: started
-  with_items:
-  - elasticsearch
-  - logstash
   become: yes
   tags:
   - client
+  with_items:
+  - elasticsearch
+  - logstash
 
 - name: Start Elastic Stack services and enable them on reboot
   systemd:
@@ -106,8 +106,8 @@
     enabled: yes
     name: "{{ item }}"
     state: started
-  with_items:
-  - kibana
   become: yes
   tags:
   - server
+  with_items:
+  - kibana

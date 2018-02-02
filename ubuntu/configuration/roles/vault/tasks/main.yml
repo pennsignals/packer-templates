@@ -26,8 +26,8 @@
     mode: +x
     remote_src: yes
     src: "{{ response.dest }}"
-  when: response.dest is defined
   become: yes
+  when: response.dest is defined
 
 - name: Create vault configuration directory
   file:

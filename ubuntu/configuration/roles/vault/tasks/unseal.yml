@@ -29,16 +29,16 @@
     method: PUT
     return_content: yes
     url: http://127.0.0.1:8200/v1/sys/init
-  when: response is defined and not response.json.initialized
   register: response
+  when: response is defined and not response.json.initialized
 
 - name: Write Unseal Keys to path in key-value store
   consul_kv:
     key: bootstrap/vault/unseal-key-{{ item.0 }}
     state: present
     value: "{{ item.1 }}"
-  when: response.json is defined
   with_indexed_items: "{{ response.json['keys'] }}"
+  when: response.json is defined
 
 - name: Write Initial Root Token to path in key-value store
   consul_kv:
@@ -63,11 +63,11 @@
     body_format: json
     method: PUT
     url: http://127.0.0.1:8200/v1/sys/unseal
+  when: response.json is defined and response.json.sealed
   with_consul_kv:
   - bootstrap/vault/unseal-key-0
   - bootstrap/vault/unseal-key-1
   - bootstrap/vault/unseal-key-2
-  when: response.json is defined and response.json.sealed
 
 - set_fact:
     root_token: "{{ lookup('consul_kv', 'bootstrap/vault/initial-root-token') }}"

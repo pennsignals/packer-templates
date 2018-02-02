@@ -4,11 +4,11 @@
   apt:
     name: "{{ item }}"
     state: absent
+  become: yes
   with_items:
   - docker
   - docker-engine
   - docker.io
-  become: yes
 
 - name: Add Docker GPG key
   apt_key:

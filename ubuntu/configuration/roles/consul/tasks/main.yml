@@ -26,8 +26,8 @@
     mode: +x
     remote_src: yes
     src: "{{ response.dest }}"
-  when: response.dest is defined
   become: yes
+  when: response.dest is defined
 
 - name: Create consul configuration and data directories
   file:
@@ -36,10 +36,10 @@
     path: "{{ item }}"
     recurse: yes
     state: directory
+  become: yes
   with_items:
   - /etc/consul.d
   - /var/lib/consul/data
-  become: yes
 
 - name: Copy consul agent client configuration file
   template:

@@ -5,6 +5,7 @@
     name: "{{ item }}"
     state: present
     update_cache: yes
+  become: yes
   with_items:
   - apt-transport-https
   - ca-certificates
@@ -13,13 +14,12 @@
   - python-pip
   - software-properties-common
   - unzip
-  become: yes
 
 - name: Install required Python modules
   pip:
     name: "{{ item }}"
     state: present
+  become: yes
   with_items:
   - python-consul
   - requests
-  become: yes
