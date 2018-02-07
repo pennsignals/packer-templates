@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  connection: local
+  tasks:
+  - name: Add self-signed certificate to trusted CAs
+    command: |
+      security add-trusted-cert \
+      -d \
+      -r trustRoot \
+      -k /Library/Keychains/System.keychain \
+      ansible.crt
+    become: yes
+    when: ansible_os_family == "Darwin"
+
+  - name: Add registry.service.consul to hosts file
+    blockinfile:
+      block: 127.0.0.1 registry.service.consul
+      path: /etc/hosts
+      state: present
+    become: yes
+
+  - name: Remove certificate from host OS
+    file:
+      path: ansible.crt
+      state: absent

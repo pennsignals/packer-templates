@@ -1,4 +1,7 @@
 {
+  "insecure-registries": [
+    "registry.service.consul:5000"
+  ],
   "log-driver": "syslog",
   "log-opts": {
     "syslog-address": "udp://0.0.0.0:1111"
