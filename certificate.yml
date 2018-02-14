@@ -2,20 +2,25 @@
 
 - hosts: all
   connection: local
+  vars:
+    certificate: registry.service.consul
   tasks:
-  - name: Add self-signed certificate to trusted CAs
+  - name: Check if {{ certificate }} exists
     command: |
-      security add-trusted-cert \
-      -d \
-      -r trustRoot \
-      -k /Library/Keychains/System.keychain \
-      ansible.crt
+      security -q find-certificate -a -c {{ certificate }} -p /Library/Keychains/System.keychain
     become: yes
+    register: response
     when: ansible_os_family == "Darwin"
 
-  - name: Add registry.service.consul to hosts file
+  - name: Add self-signed certificate to trusted CAs
+    command: |
+      security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ansible.crt
+    become: yes
+    when: ansible_os_family == "Darwin" and response.stdout == ""
+
+  - name: Add {{ certificate }} to hosts file
     blockinfile:
-      block: 127.0.0.1 registry.service.consul
+      block: 127.0.0.1 {{ certificate }}
       path: /etc/hosts
       state: present
     become: yes
