@@ -5,6 +5,7 @@
   - common
   - firewall
   - docker
+  - cryptography
   - vagrant
   - consul
   - vault

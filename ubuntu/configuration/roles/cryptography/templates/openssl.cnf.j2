@@ -1,0 +1,20 @@
+[ req ]
+default_bits           = 4096
+distinguished_name     = req_distinguished_name
+prompt                 = no
+x509_extensions        = v3_req
+
+[ req_distinguished_name ]
+commonName             = {{ common_name }}
+countryName            = {{ country_name }}
+localityName           = {{ locality_name }}
+organizationName       = {{ organization_name }}
+organizationalUnitName = {{ organizational_unit_name }}
+stateOrProvinceName    = {{ state_or_province_name }}
+
+[ v3_req ]
+subjectAltName         = @alt_names
+
+[ alt_names ]
+DNS.0                  = {{ common_name }}
+IP.0                   = {{ ansible_enp0s3.ipv4.address }}

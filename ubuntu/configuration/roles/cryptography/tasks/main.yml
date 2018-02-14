@@ -1,0 +1,24 @@
+---
+
+- name: Copy custom openssl configuration file
+  template:
+    dest: /etc/ssl/ansible.cnf
+    src: openssl.cnf.j2
+  become: yes
+
+- name: Create new self-signed certificate using custom openssl configuration
+  command: |
+    openssl req \
+    -newkey rsa:4096 \
+    -nodes \
+    -sha256 \
+    -keyout /etc/ssl/private/ansible.key \
+    -x509 \
+    -days 365 \
+    -out /usr/local/share/ca-certificates/ansible.crt \
+    -config /etc/ssl/ansible.cnf
+  become: yes
+
+- name: Update CA certificates
+  command: update-ca-certificates
+  become: yes

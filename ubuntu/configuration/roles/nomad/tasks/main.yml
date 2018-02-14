@@ -84,3 +84,7 @@
   become: yes
   tags:
   - bootstrap
+
+- include_tasks: jobs.yml
+  tags:
+  - client

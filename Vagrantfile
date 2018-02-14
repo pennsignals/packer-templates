@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "base"
-  config.vm.box_url = "file://builds/packer_virtualbox-iso_virtualbox.box"
+  config.vm.box_url = "file://boxes/packer_virtualbox-iso_virtualbox.box"
 
   config.vm.define "server" do |server|
     server.vm.hostname = "server"
@@ -21,7 +21,13 @@ Vagrant.configure("2") do |config|
   config.vm.define "client" do |client|
     client.vm.hostname = "client"
 
+    client.vm.network "forwarded_port", guest: 443, host: 5000
     client.vm.network "private_network", ip: "172.20.20.10"
+
+    client.vm.provision "ansible" do |ansible|
+      ansible.ask_become_pass = true
+      ansible.playbook = "certificate.yml"
+    end
 
     client.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "playbook.yml"
@@ -33,4 +39,9 @@ end
 
 # All custom Vagrant configuration is done below.
 Vagrant.configure("2") do |config|
+  config.vm.define "server" do |server|
+  end
+
+  config.vm.define "client" do |client|
+  end
 end

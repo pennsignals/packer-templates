@@ -42,24 +42,11 @@
           "{{ user `memory` }}"
         ]
       ]
-    },
-    {
-      "host": "{{ user `vsphere_host` }}",
-      "insecure_connection": true,
-      "password": "{{ user `vsphere_password` }}",
-      "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
-      "ssh_password": "{{ user `ssh_password` }}",
-      "ssh_username": "{{ user `ssh_username` }}",
-      "template": "{{ user `vsphere_template` }}",
-      "type": "vsphere",
-      "username": "{{ user `vsphere_username` }}",
-      "vcenter_server": "{{ user `vcenter_server` }}",
-      "vm_name": "{{ user `vm_name` }}"
     }
   ],
   "post-processors": [
     {
-      "output": "{{ template_dir }}/../builds/packer_{{ .BuildName }}_{{ .Provider }}.box",
+      "output": "{{ template_dir }}/../boxes/packer_{{ .BuildName }}_{{ .Provider }}.box",
       "type": "vagrant"
     }
   ],
@@ -84,6 +71,12 @@
       "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
       "staging_directory": "/home/vagrant/packer-provisioner-ansible-local",
       "type": "ansible-local"
+    },
+    {
+      "destination": "{{ template_dir }}/../ansible.crt",
+      "direction": "download",
+      "source": "/usr/local/share/ca-certificates/ansible.crt",
+      "type": "file"
     }
   ],
   "variables": {
@@ -93,12 +86,6 @@
     "memory": "2048",
     "ssh_password": "vagrant",
     "ssh_username": "vagrant",
-    "ssh_wait_timeout": "10000s",
-    "vcenter_server": "",
-    "vm_name": "",
-    "vsphere_host": "",
-    "vsphere_password": "",
-    "vsphere_template": "",
-    "vsphere_username": ""
+    "ssh_wait_timeout": "10000s"
   }
 }
