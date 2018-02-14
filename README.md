@@ -1,11 +1,33 @@
+> A phased approach to continuous delivery is not only preferable, it's infinitely more manageable. - [Maurice Kherlakian](https://twitter.com/mkherlakian)
+
+> The most powerful tool we have as developers is automation. - [Scott Hanselman](https://twitter.com/shanselman)
+
+## Contents
+
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Usage](#usage)
+  - [Using Packer](#using-packer)
+  - [Creating a Vagrant Box](#creating-a-vagrant-box)
+  - [Custom `Vagrantfile` Configuration](#custom-vagrantfile-configuration)
+- [Using the local Docker registry](#using-the-local-docker-registry)
+- [User Interfaces](#user-interfaces)
+- [Networking](#networking)
+  - [Forwarded Ports](#forwarded-ports)
+  - [Forwarding Additional Ports](#forwarding-additional-ports)
+- [License](#license)
+
+## Overview
+
 This repository contains a [Packer Template](https://www.packer.io/docs/templates/index.html) to create a machine image using the Ubuntu 16.04.3 LTS (Xenial Xerus) server disk image. The machine image contains the following software:
 
-| Name                                     | Description                                                                                                        |
-|------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
-| [Consul](https://www.consul.io/)         | A distributed, highly available system                                                                             |
-| [Nomad](https://www.nomadproject.io/)    | A single binary that schedules applications and services on Linux, Windows, and Mac                                |
-| [Vault](https://www.vaultproject.io/)    | A Tool for Managing Secrets                                                                                        |
-| [Elastic Stack](https://www.elastic.co/) | Reliably and securely take data from any source, in any format, and search, analyze, and visualize it in real time |
+| Name                                                 | Description                                                                                                        |
+|------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| [Consul](https://www.consul.io/)                     | A distributed, highly available system                                                                             |
+| [Nomad](https://www.nomadproject.io/)                | A single binary that schedules applications and services on Linux, Windows, and Mac                                |
+| [Vault](https://www.vaultproject.io/)                | A Tool for Managing Secrets                                                                                        |
+| [Elastic Stack](https://www.elastic.co/)             | Reliably and securely take data from any source, in any format, and search, analyze, and visualize it in real time |
+| [Docker Registry](https://docs.docker.com/registry/) | A stateless, highly scalable server side application that stores and lets you distribute Docker images             |
 
 ## Prerequisites
 
@@ -53,6 +75,23 @@ To SSH into the `client` node, run the following command:
 
 Currently, the [`Vagrantfile`](Vagrantfile) contains two configuration blocks. The first configuration block defines the default configuration for the `server` node and the `client` node and should *not* be modified. The second configuration block is for any custom configurations such as [port forwarding](https://www.vagrantup.com/docs/networking/forwarded_ports.html).
 
+## Using the local Docker registry
+
+The Vagrant box contains a local [Docker Registry](https://docs.docker.com/registry/) for storing Docker images. All incoming **host** network traffic on port `5000` is forward to port `443` on the client (**guest**) node. See the [port forwarding](https://github.com/pennsignals/packer-templates/blob/master/Vagrantfile#L24) configuration in the `Vagrantfile` for additional details. To push a Docker image from the **host** machine, run the following command(s):
+
+    $ docker pull busybox
+    $ docker tag busybox registry.service.consul:5000/my-busybox
+    $ docker push registry.service.consul:5000/my-busybox
+
+Docker provides additional [documentation](https://docs.docker.com/registry/deploying/#copy-an-image-from-docker-hub-to-your-registry) for pushing images to a local registry.
+
+To pull the recently pushed image on the `client` node, run the following command(s):
+
+    $ vagrant ssh client
+    $ docker pull registry.service.consul/my-busybox
+
+**Note:** The `client` node does **not** require the port since the registry is secured using TLS.
+
 ## User Interfaces
 
 The `sever` node runs both the Consul and Nomad web user interfaces. To access them, visit the following links in a web browser:
@@ -85,7 +124,9 @@ Below is an example of the syntax for forwarding a port:
 
 ```ruby
 Vagrant.configure("2") do |config|
-  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.define "server" do |server|
+    server.vm.network "forwarded_port", guest: 1337, host: 1337
+  end
 end
 ```
 
