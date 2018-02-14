@@ -21,6 +21,15 @@
   tags:
   - client
 
+- name:
+  capabilities:
+    capability: cap_net_bind_service+epi
+    path: /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+    state: present
+  become: yes
+  tags:
+  - client
+
 - name: Add Elastic Stack GPG key
   apt_key:
     id: D88E42B4
