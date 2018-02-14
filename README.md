@@ -30,7 +30,7 @@ To enable the logger during the `build` process, set the `PACKER_LOG` environmen
 
 	$ PACKER_LOG=1 packer build -only=virtualbox-iso 16.04.3-server-amd64.json
 
-If the Packer build is successful, then it creates a [Vagrant Box](https://www.vagrantup.com/docs/boxes.html) in the [`builds`](builds) directory.
+If the Packer build is successful, then it creates a [Vagrant Box](https://www.vagrantup.com/docs/boxes.html) in the `boxes` directory.
 
 ### Creating a Vagrant Box
 
