@@ -21,7 +21,7 @@
   tags:
   - client
 
-- name:
+- name: Enable privileged capabilities for Java
   capabilities:
     capability: cap_net_bind_service+epi
     path: /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
