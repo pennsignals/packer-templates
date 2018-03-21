@@ -19,7 +19,7 @@
         "kbd-chooser/method=us<spacebar>",
         "keyboard-configuration/layout=us<spacebar>",
         "keyboard-configuration/variant=us<spacebar>",
-        "netcfg/get_hostname=vagrant<spacebar>",
+        "netcfg/get_hostname=unassigned-hostname<spacebar>",
         "noapic<spacebar>",
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
         "--<spacebar><wait><enter><wait>"
@@ -65,11 +65,23 @@
       "clean_staging_directory": false,
       "extra_arguments": [
         "--skip-tags",
-        "bootstrap,client,server"
+        "bootstrap,client,server,virtualbox-iso"
       ],
       "playbook_dir": "{{ template_dir }}/configuration",
       "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
       "staging_directory": "/home/vagrant/packer-provisioner-ansible-local",
+      "type": "ansible-local"
+    },
+    {
+      "extra_arguments": [
+        "--tags",
+        "virtualbox-iso"
+      ],
+      "playbook_dir": "{{ template_dir }}/configuration",
+      "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
+      "only": [
+        "virtualbox-iso"
+      ],
       "type": "ansible-local"
     },
     {

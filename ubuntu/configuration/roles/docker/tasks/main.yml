@@ -28,9 +28,3 @@
     state: present
     update_cache: yes
   become: yes
-
-- name: Copy Docker daemon configuration file
-  copy:
-    dest: /etc/docker/daemon.json
-    src: daemon.json
-  become: yes
