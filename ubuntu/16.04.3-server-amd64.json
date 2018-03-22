@@ -1,6 +1,44 @@
 {
   "builders": [
     {
+      "accelerator": "{{ user `accelerator` }}",
+      "boot_command": [
+        "<enter><wait><f6><esc>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "/install/vmlinuz<spacebar>",
+        "auto<spacebar>",
+        "console-setup/ask_detect=false<spacebar>",
+        "debconf/frontend=noninteractive<spacebar>",
+        "debian-installer/framebuffer=false<spacebar>",
+        "debian-installer/locale=en_US.UTF-8<spacebar>",
+        "debian-installer=en_US.UTF-8<spacebar>",
+        "grub-installer/bootdev=/dev/sda<spacebar>",
+        "initrd=/install/initrd.gz<spacebar>",
+        "kbd-chooser/method=us<spacebar>",
+        "keyboard-configuration/layout=us<spacebar>",
+        "keyboard-configuration/variant=us<spacebar>",
+        "netcfg/get_hostname=unassigned-hostname<spacebar>",
+        "noapic<spacebar>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
+        "--<spacebar><wait><enter><wait>"
+      ],
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "qemu_binary": "/usr/local/bin/qemu-system-x86_64",
+      "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
+      "type": "qemu",
+      "vnc_bind_address": "0.0.0.0"
+    },
+    {
       "boot_command": [
         "<enter><wait><f6><esc>",
         "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
@@ -46,6 +84,7 @@
   ],
   "post-processors": [
     {
+      "include": "{{ template_dir }}/../metadata.json",
       "output": "{{ template_dir }}/../boxes/packer_{{ .BuildName }}_{{ .Provider }}.box",
       "type": "vagrant"
     }
@@ -92,6 +131,7 @@
     }
   ],
   "variables": {
+    "accelerator": "none",
     "iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
     "iso_checksum_type": "sha256",
     "iso_url": "http://releases.ubuntu.com/16.04.3/ubuntu-16.04.3-server-amd64.iso",
