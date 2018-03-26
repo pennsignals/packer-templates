@@ -85,6 +85,6 @@
   tags:
   - bootstrap
 
-- include_tasks: jobs.yml
+- import_tasks: jobs.yml
   tags:
   - client

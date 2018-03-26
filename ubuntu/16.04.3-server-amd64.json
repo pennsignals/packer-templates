@@ -15,7 +15,7 @@
         "debian-installer/framebuffer=false<spacebar>",
         "debian-installer/locale=en_US.UTF-8<spacebar>",
         "debian-installer=en_US.UTF-8<spacebar>",
-        "grub-installer/bootdev=/dev/sda<spacebar>",
+        "grub-installer/bootdev=/dev/vda<spacebar>",
         "initrd=/install/initrd.gz<spacebar>",
         "kbd-chooser/method=us<spacebar>",
         "keyboard-configuration/layout=us<spacebar>",
@@ -25,8 +25,8 @@
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
         "--<spacebar><wait><enter><wait>"
       ],
-      "headless": true,
-      "http_directory": "http",
+      "headless": "{{ user `headless` }}",
+      "http_directory": "{{ user `http_directory` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "iso_url": "{{ user `iso_url` }}",
@@ -36,7 +36,7 @@
       "ssh_username": "{{ user `ssh_username` }}",
       "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
       "type": "qemu",
-      "vnc_bind_address": "0.0.0.0"
+      "vnc_bind_address": "{{ user `vnc_bind_address` }}"
     },
     {
       "boot_command": [
@@ -63,7 +63,8 @@
         "--<spacebar><wait><enter><wait>"
       ],
       "guest_os_type": "Ubuntu_64",
-      "http_directory": "http",
+      "headless": "{{ user `headless` }}",
+      "http_directory": "{{ user `http_directory` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "iso_url": "{{ user `iso_url` }}",
@@ -116,11 +117,11 @@
         "--tags",
         "virtualbox-iso"
       ],
-      "playbook_dir": "{{ template_dir }}/configuration",
-      "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
       "only": [
         "virtualbox-iso"
       ],
+      "playbook_dir": "{{ template_dir }}/configuration",
+      "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
       "type": "ansible-local"
     },
     {
@@ -132,6 +133,8 @@
   ],
   "variables": {
     "accelerator": "none",
+    "headless": "true",
+    "http_directory": "http",
     "iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
     "iso_checksum_type": "sha256",
     "iso_url": "http://releases.ubuntu.com/16.04.3/ubuntu-16.04.3-server-amd64.iso",
@@ -139,6 +142,7 @@
     "qemu_binary": "/usr/local/bin/qemu-system-x86_64",
     "ssh_password": "vagrant",
     "ssh_username": "vagrant",
-    "ssh_wait_timeout": "10000s"
+    "ssh_wait_timeout": "10000s",
+    "vnc_bind_address": "0.0.0.0"
   }
 }
