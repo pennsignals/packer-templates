@@ -1,0 +1,33 @@
+---
+
+- name: Create VBoxGuestAdditions directory
+  file:
+    path: /media/VBoxGuestAdditions
+    state: directory
+  become: yes
+
+- name: Mount VBoxGuestAdditions image
+  mount:
+    fstype: iso9660
+    opts: loop,ro
+    path: /media/VBoxGuestAdditions
+    src: "{{ ansible_env.HOME }}/VBoxGuestAdditions.iso"
+    state: mounted
+  become: yes
+
+- name: Install VBoxGuestAdditions
+  shell: /bin/bash /media/VBoxGuestAdditions/VBoxLinuxAdditions.run
+  become: yes
+  ignore_errors: yes
+
+- name: Remove vagrant user public key
+  file:
+    path: /tmp/vagrant.pub
+    state: absent
+  become: yes
+
+- name: Unmount VBoxGuestAdditions image
+  mount:
+    path: /media/VBoxGuestAdditions
+    state: unmounted
+  become: yes
