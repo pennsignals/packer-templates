@@ -85,7 +85,6 @@
   ],
   "post-processors": [
     {
-      "include": "{{ template_dir }}/../metadata.json",
       "output": "{{ template_dir }}/../boxes/packer_{{ .BuildName }}_{{ .Provider }}.box",
       "type": "vagrant"
     }
