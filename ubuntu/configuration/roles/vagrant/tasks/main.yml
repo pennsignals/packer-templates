@@ -18,6 +18,7 @@
     state: present
     user: vagrant
   become: yes
+  become_user: vagrant
 
 - import_tasks: guest-additions.yml
   tags:
