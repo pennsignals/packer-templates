@@ -21,6 +21,7 @@
         "keyboard-configuration/layout=us<spacebar>",
         "keyboard-configuration/variant=us<spacebar>",
         "netcfg/get_hostname=unassigned-hostname<spacebar>",
+        "net.ifnames=0<spacebar>",
         "noapic<spacebar>",
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
         "--<spacebar><wait><enter><wait>"
@@ -58,6 +59,7 @@
         "keyboard-configuration/layout=us<spacebar>",
         "keyboard-configuration/variant=us<spacebar>",
         "netcfg/get_hostname=unassigned-hostname<spacebar>",
+        "net.ifnames=0<spacebar>",
         "noapic<spacebar>",
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
         "--<spacebar><wait><enter><wait>"
@@ -96,7 +98,8 @@
         "sudo apt-get update",
         "sudo apt-get install -y python-pip",
         "sudo pip install ansible",
-        "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/vagrant"
+        "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/vagrant",
+        "mkdir /home/vagrant/.ssh"
       ],
       "type": "shell"
     },
@@ -124,7 +127,19 @@
       "type": "ansible-local"
     },
     {
-      "destination": "{{ template_dir }}/../ansible.crt",
+      "destination": "/tmp/authorized_keys",
+      "source": "{{ template_dir }}/../authorized_keys",
+      "type": "file"
+    },
+    {
+      "execute_command": "echo 'vagrant' | sudo -S env {{ .Vars }} {{ .Path }}",
+      "inline": [
+        "mv /tmp/authorized_keys /home/vagrant/.ssh"
+      ],
+      "type": "shell"
+    },
+    {
+      "destination": "{{ template_dir }}/../boxes/ansible.crt",
       "direction": "download",
       "source": "/usr/local/share/ca-certificates/ansible.crt",
       "type": "file"
