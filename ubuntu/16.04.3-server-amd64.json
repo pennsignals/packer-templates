@@ -98,8 +98,7 @@
         "sudo apt-get update",
         "sudo apt-get install -y python-pip",
         "sudo pip install ansible",
-        "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/vagrant",
-        "mkdir /home/vagrant/.ssh"
+        "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/vagrant"
       ],
       "type": "shell"
     },
@@ -125,18 +124,6 @@
       "playbook_dir": "{{ template_dir }}/configuration",
       "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
       "type": "ansible-local"
-    },
-    {
-      "destination": "/tmp/authorized_keys",
-      "source": "{{ template_dir }}/../authorized_keys",
-      "type": "file"
-    },
-    {
-      "execute_command": "echo 'vagrant' | sudo -S env {{ .Vars }} {{ .Path }}",
-      "inline": [
-        "mv /tmp/authorized_keys /home/vagrant/.ssh"
-      ],
-      "type": "shell"
     },
     {
       "destination": "{{ template_dir }}/../boxes/ansible.crt",
