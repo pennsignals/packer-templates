@@ -1,6 +1,45 @@
 {
   "builders": [
     {
+      "accelerator": "{{ user `accelerator` }}",
+      "boot_command": [
+        "<enter><wait><f6><esc>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "/install/vmlinuz<spacebar>",
+        "auto<spacebar>",
+        "console-setup/ask_detect=false<spacebar>",
+        "debconf/frontend=noninteractive<spacebar>",
+        "debian-installer/framebuffer=false<spacebar>",
+        "debian-installer/locale=en_US.UTF-8<spacebar>",
+        "debian-installer=en_US.UTF-8<spacebar>",
+        "grub-installer/bootdev=/dev/vda<spacebar>",
+        "initrd=/install/initrd.gz<spacebar>",
+        "kbd-chooser/method=us<spacebar>",
+        "keyboard-configuration/layout=us<spacebar>",
+        "keyboard-configuration/variant=us<spacebar>",
+        "netcfg/get_hostname=unassigned-hostname<spacebar>",
+        "net.ifnames=0<spacebar>",
+        "noapic<spacebar>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
+        "--<spacebar><wait><enter><wait>"
+      ],
+      "headless": "{{ user `headless` }}",
+      "http_directory": "{{ user `http_directory` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "qemu_binary": "{{ user `qemu_binary` }}",
+      "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
+      "type": "qemu",
+      "vnc_bind_address": "{{ user `vnc_bind_address` }}"
+    },
+    {
       "boot_command": [
         "<enter><wait><f6><esc>",
         "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
@@ -20,12 +59,14 @@
         "keyboard-configuration/layout=us<spacebar>",
         "keyboard-configuration/variant=us<spacebar>",
         "netcfg/get_hostname=unassigned-hostname<spacebar>",
+        "net.ifnames=0<spacebar>",
         "noapic<spacebar>",
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
         "--<spacebar><wait><enter><wait>"
       ],
       "guest_os_type": "Ubuntu_64",
-      "http_directory": "http",
+      "headless": "{{ user `headless` }}",
+      "http_directory": "{{ user `http_directory` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "iso_url": "{{ user `iso_url` }}",
@@ -77,27 +118,32 @@
         "--tags",
         "virtualbox-iso"
       ],
-      "playbook_dir": "{{ template_dir }}/configuration",
-      "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
       "only": [
         "virtualbox-iso"
       ],
+      "playbook_dir": "{{ template_dir }}/configuration",
+      "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
       "type": "ansible-local"
     },
     {
-      "destination": "{{ template_dir }}/../ansible.crt",
+      "destination": "{{ template_dir }}/../boxes/ansible.crt",
       "direction": "download",
       "source": "/usr/local/share/ca-certificates/ansible.crt",
       "type": "file"
     }
   ],
   "variables": {
+    "accelerator": "none",
+    "headless": "true",
+    "http_directory": "http",
     "iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
     "iso_checksum_type": "sha256",
     "iso_url": "http://releases.ubuntu.com/16.04.3/ubuntu-16.04.3-server-amd64.iso",
     "memory": "2048",
+    "qemu_binary": "/usr/local/bin/qemu-system-x86_64",
     "ssh_password": "vagrant",
     "ssh_username": "vagrant",
-    "ssh_wait_timeout": "10000s"
+    "ssh_wait_timeout": "10000s",
+    "vnc_bind_address": "0.0.0.0"
   }
 }

@@ -2,7 +2,7 @@ addresses {
   http = "0.0.0.0"
 }
 
-bind_addr = "{{ ansible_enp0s8.ipv4.address }}"
+bind_addr = "{{ ansible_eth1.ipv4.address }}"
 
 data_dir = "/var/lib/nomad"
 

@@ -1,5 +1,5 @@
 {
-  "bind_addr": "{{ ansible_enp0s8.ipv4.address }}",
+  "bind_addr": "{{ ansible_eth1.ipv4.address }}",
   "bootstrap_expect": 1,
   "client_addr": "0.0.0.0",
   "data_dir": "/var/lib/consul/data",

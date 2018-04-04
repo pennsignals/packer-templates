@@ -1,6 +1,5 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "base"
-  config.vm.box_url = "file://boxes/packer_virtualbox-iso_virtualbox.box"
 
   config.vm.define "server" do |server|
     server.vm.hostname = "server"
@@ -14,7 +13,10 @@ Vagrant.configure("2") do |config|
     server.vm.provision "ansible_local", run: "always" do |ansible|
       ansible.playbook = "playbook.yml"
       ansible.provisioning_path = "/home/vagrant/packer-provisioner-ansible-local"
-      ansible.tags = ["bootstrap", "server"]
+      ansible.tags = [
+        "bootstrap",
+        "server",
+      ]
     end
   end
 
@@ -32,8 +34,15 @@ Vagrant.configure("2") do |config|
     client.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "playbook.yml"
       ansible.provisioning_path = "/home/vagrant/packer-provisioner-ansible-local"
-      ansible.tags = ["bootstrap", "client"]
+      ansible.tags = [
+        "bootstrap",
+        "client",
+      ]
     end
+  end
+
+  config.vm.provider "virtualbox" do |virtualbox, override|
+    override.vm.box_url = "file://boxes/packer_virtualbox-iso_virtualbox.box"
   end
 end
 
