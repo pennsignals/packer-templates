@@ -63,6 +63,6 @@
   tags:
   - server
 
-- include_tasks: unseal.yml
+- import_tasks: unseal.yml
   tags:
   - server

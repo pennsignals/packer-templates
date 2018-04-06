@@ -17,4 +17,4 @@ subjectAltName         = @alt_names
 
 [ alt_names ]
 DNS.0                  = {{ common_name }}
-IP.0                   = {{ ansible_enp0s3.ipv4.address }}
+IP.0                   = {{ ansible_eth0.ipv4.address }}

@@ -6,7 +6,7 @@
   - firewall
   - docker
   - cryptography
-  - { role: vagrant, tags: ['virtualbox-iso'] }
+  - vagrant
   - consul
   - vault
   - nomad

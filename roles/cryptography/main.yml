@@ -1,0 +1,16 @@
+---
+
+- hosts: all
+  connection: local
+  vars:
+    certificate: registry.service.consul
+  tasks:
+  - import_tasks: darwin.yml
+    when: ansible_os_family == "Darwin"
+
+  - name: Add {{ certificate }} to hosts file
+    blockinfile:
+      block: 127.0.0.1 {{ certificate }}
+      path: /etc/hosts
+      state: present
+    become: yes
