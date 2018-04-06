@@ -10,6 +10,7 @@
   - [Using Packer](#using-packer)
   - [Creating a Vagrant Box](#creating-a-vagrant-box)
   - [Custom `Vagrantfile` Configuration](#custom-vagrantfile-configuration)
+- [Supported Hypervisors](#supported-hypervisors)
 - [Using the local Docker registry](#using-the-local-docker-registry)
 - [User Interfaces](#user-interfaces)
 - [Networking](#networking)
@@ -33,9 +34,10 @@ This repository contains a [Packer Template](https://www.packer.io/docs/template
 
 The following software is required to build images using Packer and export them as Vagrant [Boxes](https://www.vagrantup.com/docs/boxes.html):
 
+- [Ansible](http://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 - [Packer](https://www.packer.io/downloads.html)
 - [Vagrant](https://www.vagrantup.com/downloads.html)
-- [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+- *At least* one of the [supported hypervisors](#supported-hypervisors)
 
 ## Usage
 
@@ -75,9 +77,18 @@ To SSH into the `client` node, run the following command:
 
 Currently, the [`Vagrantfile`](Vagrantfile) contains two configuration blocks. The first configuration block defines the default configuration for the `server` node and the `client` node and should *not* be modified. The second configuration block is for any custom configurations such as [port forwarding](https://www.vagrantup.com/docs/networking/forwarded_ports.html).
 
+## Supported Hypervisors
+
+This repository supports the following hypervisors:
+
+| Hypervisor                                                                                                                       | Vagrant Command                    |
+|----------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
+| [VirtualBox](https://www.virtualbox.org/)                                                                                        | `vagrant up --provider=virtualbox` |
+| [KVM](https://www.linux-kvm.org/page/Main_Page) via [vagrant-libvirt](https://github.com/vagrant-libvirt/vagrant-libvirt) plugin | `vagrant up --provider=libvirt`    |
+
 ## Using the local Docker registry
 
-The Vagrant box contains a local [Docker Registry](https://docs.docker.com/registry/) for storing Docker images. All incoming **host** network traffic on port `5000` is forward to port `443` on the client (**guest**) node. See the [port forwarding](https://github.com/pennsignals/packer-templates/blob/master/Vagrantfile#L24) configuration in the `Vagrantfile` for additional details. To push a Docker image from the **host** machine, run the following command(s):
+The Vagrant box contains a local [Docker Registry](https://docs.docker.com/registry/) for storing Docker images. All incoming **host** network traffic on port `5000` is forwarded to port `443` on the client (**guest**) node. See the [port forwarding](https://github.com/pennsignals/packer-templates/blob/master/Vagrantfile#L24) configuration in the `Vagrantfile` for additional details. To push a Docker image from the **host** machine, run the following command(s):
 
     $ docker pull busybox
     $ docker tag busybox registry.service.consul:5000/my-busybox
@@ -132,4 +143,4 @@ end
 
 ## License
 
-[pennsignals](https://github.com/pennsignals) @ [MIT](https://github.com/pennsignals/packer-templates/blob/master/LICENSE)
+[MIT](https://github.com/pennsignals/packer-templates/blob/master/LICENSE) @ [pennsignals](https://github.com/pennsignals)
