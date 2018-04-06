@@ -83,10 +83,64 @@
           "{{ user `memory` }}"
         ]
       ]
+    },
+    {
+      "boot_command": [
+        "<enter><wait><f6><esc>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "/install/vmlinuz<spacebar>",
+        "auto<spacebar>",
+        "console-setup/ask_detect=false<spacebar>",
+        "debconf/frontend=noninteractive<spacebar>",
+        "debian-installer/framebuffer=false<spacebar>",
+        "debian-installer/locale=en_US.UTF-8<spacebar>",
+        "debian-installer=en_US.UTF-8<spacebar>",
+        "grub-installer/bootdev=/dev/sda<spacebar>",
+        "initrd=/install/initrd.gz<spacebar>",
+        "kbd-chooser/method=us<spacebar>",
+        "keyboard-configuration/layout=us<spacebar>",
+        "keyboard-configuration/variant=us<spacebar>",
+        "noapic<spacebar>",
+        "file=/floppy/preseed.cfg<spacebar>",
+        "--<spacebar><wait><enter><wait>"
+      ],
+      "floppy_files": [
+        "http/preseed.cfg"
+      ],
+      "guest_os_type": "ubuntu-64",
+      "http_directory": "http",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "remote_datastore": "{{ user `remote_datastore` }}",
+      "remote_host": "{{ user `remote_host` }}",
+      "remote_type": "esx5",
+      "remote_password": "{{ user `remote_password` }}",
+      "remote_username": "{{ user `remote_username` }}",
+      "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
+      "tools_upload_flavor": "linux",
+      "type": "vmware-iso",
+      "vmx_data": {
+        "ethernet0.dvs.portgroupid": "{{ user `ethernet0.dvs.portgroupid` }}",
+        "ethernet0.dvs.switchid": "{{ user `ethernet0.dvs.switchid` }}",
+        "ethernet0.startconnected": "TRUE"
+      },
+      "vnc_bind_address": "{{ user `vnc_bind_address` }}",
+      "vnc_disable_password": true
     }
   ],
   "post-processors": [
     {
+      "only": [
+        "virtualbox-iso"
+      ],
       "output": "{{ template_dir }}/../boxes/packer_{{ .BuildName }}_{{ .Provider }}.box",
       "type": "vagrant"
     }
@@ -132,6 +186,7 @@
       "type": "file"
     }
   ],
+  "_comment": "ethernet0.dvs is for vSphere Distributed Switch configurations",
   "variables": {
     "accelerator": "none",
     "headless": "true",
@@ -144,6 +199,9 @@
     "ssh_password": "vagrant",
     "ssh_username": "vagrant",
     "ssh_wait_timeout": "10000s",
-    "vnc_bind_address": "0.0.0.0"
+    "vnc_bind_address": "0.0.0.0",
+
+    "ethernet0.dvs.portgroupid": "",
+    "ethernet0.dvs.switchid": ""
   }
 }
