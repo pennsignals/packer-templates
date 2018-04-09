@@ -21,7 +21,7 @@
         "keyboard-configuration/layout=us<spacebar>",
         "keyboard-configuration/variant=us<spacebar>",
         "netcfg/get_hostname=unassigned-hostname<spacebar>",
-        "net.ifnames=0<spacebar>",
+        "biosdevname=0 net.ifnames=0<spacebar>",
         "noapic<spacebar>",
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
         "--<spacebar><wait><enter><wait>"
@@ -59,7 +59,7 @@
         "keyboard-configuration/layout=us<spacebar>",
         "keyboard-configuration/variant=us<spacebar>",
         "netcfg/get_hostname=unassigned-hostname<spacebar>",
-        "net.ifnames=0<spacebar>",
+        "biosdevname=0 net.ifnames=0<spacebar>",
         "noapic<spacebar>",
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<spacebar>",
         "--<spacebar><wait><enter><wait>"
