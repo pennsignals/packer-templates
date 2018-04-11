@@ -1,16 +1,22 @@
 ---
 
 - hosts: all
-  connection: local
   vars:
     certificate: registry.service.consul
   tasks:
+  - name: Fetch the self-signed certificate from the client
+    fetch:
+      dest: "{{ playbook_dir }}/../../boxes/ansible.crt"
+      flat: yes
+      src: /usr/local/share/ca-certificates/ansible.crt
+
   - import_tasks: darwin.yml
     when: ansible_os_family == "Darwin"
 
-  - name: Add {{ certificate }} to hosts file
+  - name: Add certificate to hosts file
     blockinfile:
       block: 127.0.0.1 {{ certificate }}
       path: /etc/hosts
       state: present
     become: yes
+    delegate_to: 127.0.0.1
