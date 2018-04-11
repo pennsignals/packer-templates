@@ -178,12 +178,6 @@
       "playbook_dir": "{{ template_dir }}/configuration",
       "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
       "type": "ansible-local"
-    },
-    {
-      "destination": "{{ template_dir }}/../boxes/ansible.crt",
-      "direction": "download",
-      "source": "/usr/local/share/ca-certificates/ansible.crt",
-      "type": "file"
     }
   ],
   "_comment": "ethernet0.dvs is for vSphere Distributed Switch configurations",
