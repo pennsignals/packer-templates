@@ -162,8 +162,8 @@
         "--skip-tags",
         "bootstrap,client,server,virtualbox-iso"
       ],
-      "playbook_dir": "{{ template_dir }}/configuration",
-      "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
+      "playbook_dir": "{{ template_dir }}",
+      "playbook_file": "{{ template_dir }}/playbook.yml",
       "staging_directory": "/home/vagrant/packer-provisioner-ansible-local",
       "type": "ansible-local"
     },
@@ -175,8 +175,8 @@
       "only": [
         "virtualbox-iso"
       ],
-      "playbook_dir": "{{ template_dir }}/configuration",
-      "playbook_file": "{{ template_dir }}/configuration/playbook.yml",
+      "playbook_dir": "{{ template_dir }}",
+      "playbook_file": "{{ template_dir }}/playbook.yml",
       "type": "ansible-local"
     }
   ],
