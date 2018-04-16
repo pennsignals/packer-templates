@@ -1,0 +1,10 @@
+---
+
+- name: Schedule nomad jobs
+  uri:
+    body: "{{ lookup('file', item) }}"
+    body_format: json
+    method: POST
+    url: http://nomad.service.consul:4646/v1/jobs
+  with_fileglob:
+  - files/jobs/*

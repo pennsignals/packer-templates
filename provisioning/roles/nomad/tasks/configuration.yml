@@ -1,0 +1,35 @@
+---
+
+- name: Copy nomad agent client configuration file
+  template:
+    dest: /etc/nomad.d/configuration.hcl
+    group: nomad
+    owner: nomad
+    src: client.hcl.j2
+  become: yes
+  tags:
+  - client
+
+- name: Copy nomad agent server configuration file
+  template:
+    dest: /etc/nomad.d/configuration.hcl
+    group: nomad
+    owner: nomad
+    src: server.hcl.j2
+  become: yes
+  tags:
+  - server
+
+- name: Restart nomad service and enable it on reboot
+  service:
+    enabled: yes
+    name: nomad
+    state: started
+  become: yes
+  tags:
+  - client
+  - server
+
+- import_tasks: jobs.yml
+  tags:
+  - client

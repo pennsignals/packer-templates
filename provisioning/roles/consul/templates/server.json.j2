@@ -1,0 +1,10 @@
+{
+  "bind_addr": "{{ ansible_eth1.ipv4.address }}",
+  "bootstrap_expect": {{ consul_bootstrap_expect }},
+  "client_addr": "0.0.0.0",
+  "data_dir": "/var/lib/consul/data",
+  "leave_on_terminate": true,
+  "server": true,
+  "skip_leave_on_interrupt": true,
+  "ui": true
+}

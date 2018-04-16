@@ -1,0 +1,50 @@
+---
+
+- name: Create nomad group
+  group:
+    name: nomad
+    state: present
+  become: yes
+
+- name: Create nomad user
+  user:
+    groups:
+    - docker
+    - nomad
+    name: nomad
+    shell: /usr/sbin/nologin
+    state: present
+  become: yes
+
+- name: Download nomad
+  get_url:
+    dest: /tmp
+    url: https://releases.hashicorp.com/nomad/0.8.0/nomad_0.8.0_linux_amd64.zip
+  register: response
+
+- name: Move nomad binary to executable directory
+  unarchive:
+    dest: /usr/local/bin
+    mode: +x
+    remote_src: yes
+    src: "{{ response.dest }}"
+  become: yes
+  when: response.dest is defined
+
+- name: Create nomad configuration and data directories
+  file:
+    group: nomad
+    owner: nomad
+    path: "{{ item }}"
+    recurse: yes
+    state: directory
+  become: yes
+  with_items:
+  - /etc/nomad.d
+  - /var/lib/nomad/data
+
+- name: Copy nomad unit configuration file
+  copy:
+    dest: /etc/init/nomad.conf
+    src: upstart.conf
+  become: yes

@@ -1,0 +1,24 @@
+---
+
+- name: Copy vault agent configuration file
+  copy:
+    dest: /etc/vault.d/server.hcl
+    group: vault
+    owner: vault
+    src: server.hcl
+  become: yes
+  tags:
+  - server
+
+- name: Restart vault service and enable it on reboot
+  service:
+    enabled: yes
+    name: vault
+    state: started
+  become: yes
+  tags:
+  - server
+
+- import_tasks: unseal.yml
+  tags:
+  - server

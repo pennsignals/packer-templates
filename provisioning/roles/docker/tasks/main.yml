@@ -1,0 +1,40 @@
+---
+
+- name: Remove old versions of Docker
+  apt:
+    name: "{{ item }}"
+    state: absent
+  become: yes
+  with_items:
+  - docker
+  - docker-engine
+  - docker.io
+
+- name: Add Docker GPG key
+  apt_key:
+    id: 0EBFCD88
+    state: present
+    url: https://download.docker.com/linux/ubuntu/gpg
+  become: yes
+  ignore_errors: yes
+  register: response
+
+- name: Add Docker GPG key via curl if (no SNI)
+  shell: >
+    curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  args:
+    warn: no
+  when: response is failed
+
+- name: Add Docker stable repository
+  apt_repository:
+    repo: >
+      deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
+  become: yes
+
+- name: Install Docker Community Edition
+  apt:
+    name: docker-ce
+    state: present
+    update_cache: yes
+  become: yes

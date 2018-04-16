@@ -1,0 +1,25 @@
+---
+
+- name: Install required software packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  become: yes
+  with_items:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - dnsmasq
+  - git
+  - python-pip
+  - unzip
+
+- name: Install required Python modules
+  pip:
+    name: "{{ item }}"
+    state: present
+  become: yes
+  with_items:
+  - git+https://github.com/cablehead/python-consul.git
+  - requests

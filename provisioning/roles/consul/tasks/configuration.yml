@@ -1,0 +1,31 @@
+---
+
+- name: Copy consul agent server configuration file
+  template:
+    dest: /etc/consul.d/configuration.json
+    group: consul
+    owner: consul
+    src: server.json.j2
+  become: yes
+  tags:
+  - server
+
+- name: Copy consul agent client configuration file
+  template:
+    dest: /etc/consul.d/configuration.json
+    group: consul
+    owner: consul
+    src: client.json.j2
+  become: yes
+  tags:
+  - client
+
+- name: Restart consul service and enable it on reboot
+  service:
+    enabled: yes
+    name: consul
+    state: started
+  become: yes
+  tags:
+  - client
+  - server
