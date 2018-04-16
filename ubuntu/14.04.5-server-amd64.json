@@ -144,6 +144,13 @@
   ],
   "provisioners": [
     {
+      "execute_command": "",
+      "inline": [
+        "sudo echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
+      ],
+      "type": "shell"
+    },
+    {
       "execute_command": "echo 'vagrant' | sudo -S env {{ .Vars }} {{ .Path }}",
       "inline": [
         "sudo mkdir /media/VBoxGuestAdditions",
@@ -151,8 +158,7 @@
         "sudo sh /media/VBoxGuestAdditions/VBoxLinuxAdditions.run || echo $?",
         "rm VBoxGuestAdditions.iso",
         "sudo umount /media/VBoxGuestAdditions",
-        "sudo rmdir /media/VBoxGuestAdditions",
-        "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
+        "sudo rmdir /media/VBoxGuestAdditions"
       ],
       "only": [
         "virtualbox-iso"
