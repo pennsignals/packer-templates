@@ -144,7 +144,7 @@
   ],
   "provisioners": [
     {
-      "execute_command": "",
+      "execute_command": "echo 'vagrant' | sudo -S env {{ .Vars }} {{ .Path }}",
       "inline": [
         "sudo echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
       ],
