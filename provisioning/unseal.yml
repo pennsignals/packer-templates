@@ -2,6 +2,12 @@
 
 - hosts: all
   tasks:
+  - name: Wait for Vault to become available
+    wait_for:
+      delay: 1
+      port: 8200
+      state: started
+
   - name: Check seal status of Vault
     uri:
       return_content: yes
