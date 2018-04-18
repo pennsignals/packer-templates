@@ -18,3 +18,7 @@
   become: yes
   tags:
   - server
+
+- import_tasks: unseal.yml
+  tags:
+  - server

@@ -1,0 +1,4 @@
+---
+
+vault_secret_shares: 5
+vault_secret_threshold: 3

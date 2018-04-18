@@ -18,7 +18,7 @@ Vagrant.configure("2") do |config|
       ansible.tags = "server"
     end
 
-    # Always unseal the Vault server.
+    # Always perform the Vault unseal process IF the Vault is sealed.
     server.vm.provision "ansible", run: "always" do |ansible|
       ansible.playbook = "provisioning/unseal.yml"
     end
