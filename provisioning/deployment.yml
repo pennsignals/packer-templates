@@ -4,13 +4,13 @@
   tasks:
   - import_role:
       name: consul
-      tasks_from: configuration
+      tasks_from: deployment
   - import_role:
       name: vault
-      tasks_from: configuration
+      tasks_from: deployment
   - import_role:
       name: nomad
-      tasks_from: configuration
+      tasks_from: deployment
   - import_role:
       name: logging
-      tasks_from: configuration
+      tasks_from: deployment

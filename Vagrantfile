@@ -13,9 +13,14 @@ Vagrant.configure("2") do |config|
 
     server.vm.network "private_network", ip: "172.20.20.11"
 
-    server.vm.provision "ansible", run: "always" do |ansible|
-      ansible.playbook = "provisioning/configuration.yml"
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "provisioning/deployment.yml"
       ansible.tags = "server"
+    end
+
+    # Always unseal the Vault server.
+    server.vm.provision "ansible", run: "always" do |ansible|
+      ansible.playbook = "provisioning/unseal.yml"
     end
   end
 
@@ -26,7 +31,7 @@ Vagrant.configure("2") do |config|
     client.vm.network "private_network", ip: "172.20.20.10"
 
     client.vm.provision "ansible" do |ansible|
-      ansible.playbook = "provisioning/configuration.yml"
+      ansible.playbook = "provisioning/deployment.yml"
       ansible.tags = "client"
     end
   end
