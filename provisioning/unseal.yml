@@ -1,0 +1,21 @@
+---
+
+- hosts: all
+  tasks:
+  - name: Wait for Vault to become available
+    wait_for:
+      delay: 1
+      port: 8200
+      state: started
+
+  - name: Check seal status of Vault
+    uri:
+      return_content: yes
+      url: http://127.0.0.1:8200/v1/sys/seal-status
+    ignore_errors: yes
+    register: response
+
+  - include_role:
+      name: vault
+      tasks_from: unseal
+    when: response.json is defined and response.json.sealed

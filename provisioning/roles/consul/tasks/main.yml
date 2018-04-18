@@ -1,0 +1,60 @@
+---
+
+- name: Create consul group
+  group:
+    name: consul
+    state: present
+  become: yes
+
+- name: Create consul user
+  user:
+    group: consul
+    name: consul
+    shell: /usr/sbin/nologin
+    state: present
+  become: yes
+
+- name: Download consul
+  get_url:
+    dest: /tmp
+    url: https://releases.hashicorp.com/consul/1.0.7/consul_1.0.7_linux_amd64.zip
+  register: response
+
+- name: Move consul binary to executable directory
+  unarchive:
+    dest: /usr/local/bin
+    mode: +x
+    remote_src: yes
+    src: "{{ response.dest }}"
+  become: yes
+  when: response.dest is defined
+
+- name: Create consul configuration and data directories
+  file:
+    group: consul
+    owner: consul
+    path: "{{ item }}"
+    recurse: yes
+    state: directory
+  become: yes
+  with_items:
+  - /etc/consul.d
+  - /var/lib/consul/data
+
+- name: Copy consul unit configuration file
+  copy:
+    dest: /etc/init/consul.conf
+    src: upstart.conf
+  become: yes
+
+- name: Copy dnsmasq consul configuration file
+  copy:
+    dest: /etc/dnsmasq.d/10-consul
+    src: 10-consul
+  become: yes
+
+- name: Restart dnsmasq service
+  service:
+    name: dnsmasq
+    state: restarted
+  become: yes

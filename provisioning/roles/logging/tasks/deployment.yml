@@ -1,0 +1,154 @@
+---
+
+- name: Bind Kibana server host to default gateway
+  blockinfile:
+    block: |
+      elasticsearch.url: http://172.20.20.10:9200
+      server.host: 0.0.0.0
+    insertafter: EOF
+    path: /etc/kibana/kibana.yml
+    state: present
+  become: yes
+  tags:
+  - server
+
+- name: Bind Elasticsearch server host to default gateway
+  blockinfile:
+    block: |
+      network.host: 0.0.0.0
+    insertafter: EOF
+    path: /etc/elasticsearch/elasticsearch.yml
+    state: present
+  become: yes
+  tags:
+  - client
+
+- name: Copy logstash pipeline configuration
+  copy:
+    dest: /etc/logstash/conf.d/logstash.conf
+    src: logstash.conf
+  become: yes
+  tags:
+  - client
+
+- name: Start Elastic Stack services and enable them on reboot
+  service:
+    enabled: yes
+    name: "{{ item }}"
+    state: started
+  become: yes
+  tags:
+  - client
+  with_items:
+  - elasticsearch
+  - logstash
+
+- name: Start Elastic Stack services and enable them on reboot
+  service:
+    enabled: yes
+    name: "{{ item }}"
+    state: started
+  become: yes
+  tags:
+  - server
+  with_items:
+  - kibana
+
+# Elastic Stack Filebeat and Metricbeat configuration
+# ---------------------------------------------------
+#
+# Filebeat and Metricbeat require the following products to be installed and configured:
+#
+# - Elasticsearch
+# - Logstash
+# - Kibana
+
+- name: Wait for Elasticsearch to become available
+  wait_for:
+    delay: 1
+    port: 9200
+    state: started
+  tags:
+  - client
+
+- name: Wait for Kibana to become available
+  wait_for:
+    delay: 1
+    host: 172.20.20.11
+    port: 5601
+    state: started
+  tags:
+  - client
+
+- name: Copy Filebeat configuration file
+  copy:
+    backup: yes
+    dest: /etc/filebeat/filebeat.yml
+    src: filebeat.yml
+  become: yes
+  tags:
+  - client
+
+# In Elasticsearch, index templates are used to define settings and mappings that determine how
+# fields should be analyzed. If the output is Logstash, you must load the template manually.
+#
+# Please refer to the following link for more documentation: http://bit.ly/2D5pGTp
+
+- name: Load the index template in Elasticsearch
+  command: |
+    /usr/bin/filebeat setup \
+    --template \
+    -E output.logstash.enabled=false \
+    -E 'output.elasticsearch.hosts=["localhost:9200"]'
+  become: yes
+  tags:
+  - client
+
+- name: Set up the Kibana dashboard for Filebeat
+  command: /usr/bin/filebeat setup --dashboards
+  become: yes
+  tags:
+  - client
+
+- name: Restart filebeat service and enable it on reboot
+  service:
+    enabled: yes
+    name: filebeat
+    state: restarted
+  become: yes
+  tags:
+  - client
+
+- name: Copy Metricbeat configuration file
+  copy:
+    backup: yes
+    dest: /etc/metricbeat/metricbeat.yml
+    src: metricbeat.yml
+  become: yes
+  tags:
+  - client
+
+- name: Load the index template in Elasticsearch
+  command: |
+    /usr/bin/metricbeat setup \
+    --template \
+    -E output.logstash.enabled=false \
+    -E 'output.elasticsearch.hosts=["localhost:9200"]'
+  become: yes
+  tags:
+  - client
+
+- name: Set up the Kibana dashboard for Metricbeat
+  command: /usr/bin/metricbeat setup --dashboards
+  become: yes
+  tags:
+  - client
+
+- name: Restart metricbeat service and enable it on reboot
+  service:
+    enabled: yes
+    name: metricbeat
+    state: restarted
+  become: yes
+  tags:
+  - client

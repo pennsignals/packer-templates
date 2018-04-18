@@ -1,0 +1,69 @@
+---
+
+- name: Add Java Personal Package Archive
+  apt_repository:
+    repo: ppa:openjdk-r/ppa
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Install Java Runtime Environment
+  apt:
+    name: openjdk-8-jre
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Add JAVA_HOME environment variable
+  blockinfile:
+    block: |
+      ES_HEAP_SIZE=64M
+      JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+    insertafter: EOF
+    path: /etc/environment
+    state: present
+  become: yes
+
+- name: Enable privileged capabilities for Java
+  capabilities:
+    capability: cap_net_bind_service+epi
+    path: /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+    state: present
+  become: yes
+
+- name: Add Elastic Stack GPG key
+  apt_key:
+    id: D88E42B4
+    state: present
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  become: yes
+
+- name: Add Elastic Stack stable repository
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/6.x/apt stable main
+  become: yes
+
+- name: Install Elastic Stack packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  become: yes
+  with_items:
+  - elasticsearch
+  - kibana
+  - logstash
+
+- name: Install Elastic Stack Filebeat
+  apt:
+    deb: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.2-amd64.deb
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Install Elastic Stack Metricbeat
+  apt:
+    deb: https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.2.3-amd64.deb
+    state: present
+    update_cache: yes
+  become: yes

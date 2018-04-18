@@ -13,13 +13,14 @@ Vagrant.configure("2") do |config|
 
     server.vm.network "private_network", ip: "172.20.20.11"
 
-    server.vm.provision "ansible_local", run: "always" do |ansible|
-      ansible.playbook = "playbook.yml"
-      ansible.provisioning_path = "/home/vagrant/packer-provisioner-ansible-local"
-      ansible.tags = [
-        "bootstrap",
-        "server",
-      ]
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "provisioning/deployment.yml"
+      ansible.tags = "server"
+    end
+
+    # Always perform the Vault unseal process IF the Vault is sealed.
+    server.vm.provision "ansible", run: "always" do |ansible|
+      ansible.playbook = "provisioning/unseal.yml"
     end
   end
 
@@ -30,17 +31,8 @@ Vagrant.configure("2") do |config|
     client.vm.network "private_network", ip: "172.20.20.10"
 
     client.vm.provision "ansible" do |ansible|
-      ansible.ask_become_pass = true
-      ansible.playbook = "roles/cryptography/main.yml"
-    end
-
-    client.vm.provision "ansible_local" do |ansible|
-      ansible.playbook = "playbook.yml"
-      ansible.provisioning_path = "/home/vagrant/packer-provisioner-ansible-local"
-      ansible.tags = [
-        "bootstrap",
-        "client",
-      ]
+      ansible.playbook = "provisioning/deployment.yml"
+      ansible.tags = "client"
     end
   end
 
@@ -50,8 +42,8 @@ Vagrant.configure("2") do |config|
     libvirt.username = ENV["LIBVIRT_USERNAME"]
 
     # Remote virtual machine resourcing and configuration.
-    libvirt.cpus = 2
-    libvirt.memory = 2048
+    libvirt.cpus = 4
+    libvirt.memory = 4096
     # Assigning a domain a random hostname prevents naming conflicts.
     libvirt.random_hostname = true
 

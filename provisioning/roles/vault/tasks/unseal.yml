@@ -1,0 +1,90 @@
+---
+
+# The following tasks check the initialization status of the Vault
+# service and performs an unseal if needed. The unseal keys and initial
+# root token are written to Consul.
+
+- name: Wait until a Consul leader is elected
+  uri:
+    return_content: yes
+    url: http://127.0.0.1:8500/v1/status/leader
+  delay: 1
+  register: response
+  retries: 60
+  until: response.json is defined and response.json != ""
+
+- name: Check initialization status of Vault
+  uri:
+    return_content: yes
+    url: http://127.0.0.1:8200/v1/sys/init
+  register: response
+
+- set_fact:
+    initialized: "{{ response.json.initialized }}"
+  when: response.json is defined
+
+- name: Initialize Vault
+  uri:
+    body: |
+      {
+        "secret_shares": {{ vault_secret_shares }},
+        "secret_threshold": {{ vault_secret_threshold }}
+      }
+    body_format: json
+    method: PUT
+    return_content: yes
+    url: http://127.0.0.1:8200/v1/sys/init
+  register: response
+  when: not initialized
+
+- name: Write Unseal Keys to path in key-value store
+  consul_kv:
+    key: bootstrap/vault/unseal-key-{{ item.0 }}
+    state: present
+    value: "{{ item.1 }}"
+  with_indexed_items: "{{ response.json['keys'] }}"
+  when: response.json is defined
+
+- name: Write Initial Root Token to path in key-value store
+  consul_kv:
+    key: bootstrap/vault/initial-root-token
+    state: present
+    value: "{{ response.json.root_token }}"
+  when: response.json is defined
+
+- name: Write Initial Root Token to source file for Nomad Upstart file
+  blockinfile:
+    block: export VAULT_TOKEN={{ response.json.root_token }}
+    create: yes
+    group: vault
+    owner: vault
+    path: /etc/service/vault
+    state: present
+  become: yes
+  when: response.json is defined
+
+- name: Check seal status of Vault
+  uri:
+    return_content: yes
+    url: http://127.0.0.1:8200/v1/sys/seal-status
+  ignore_errors: yes
+  register: response
+
+- set_fact:
+    sealed: "{{ response.json.sealed }}"
+  when: response.json is defined
+
+- name: Unseal Vault
+  uri:
+    body: |
+      {
+        "key": "{{ item }}"
+      }
+    body_format: json
+    method: PUT
+    url: http://127.0.0.1:8200/v1/sys/unseal
+  when: sealed
+  with_consul_kv:
+  - bootstrap/vault/unseal-key-0
+  - bootstrap/vault/unseal-key-1
+  - bootstrap/vault/unseal-key-2

@@ -1,8 +1,0 @@
----
-
-- name:
-  consul:
-    interval: 1m
-    script: >
-      curl localhost:9200/_cluster/health | python -m json.tool | jq -r .status | grep green
-    state: present
