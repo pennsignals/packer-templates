@@ -38,3 +38,10 @@
     state: present
     update_cache: yes
   become: yes
+
+- name: Add vagrant user to docker group
+  user:
+    group: docker
+    name: vagrant
+    state: present
+  become: yes

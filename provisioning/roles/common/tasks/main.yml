@@ -24,11 +24,8 @@
   - git+https://github.com/cablehead/python-consul.git
   - requests
 
-- name: Assign vagrant user to docker group
+- name: Add vagrant user
   user:
-    groups:
-    - docker
-    - vagrant
     name: vagrant
     state: present
   become: yes
