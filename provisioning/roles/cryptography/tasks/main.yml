@@ -20,5 +20,5 @@
   become: yes
 
 - name: Update CA certificates
-  command: update-ca-certificates
+  command: update-ca-certificates --fresh
   become: yes
