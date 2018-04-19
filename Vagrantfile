@@ -48,7 +48,6 @@ Vagrant.configure("2") do |config|
     libvirt.random_hostname = true
 
     override.vm.box_url = "file://boxes/packer_qemu_libvirt.box"
-    override.vm.synced_folder ".", "/vagrant", disabled: true
   end
 
   config.vm.provider "virtualbox" do |virtualbox, override|
