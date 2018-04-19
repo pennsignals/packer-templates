@@ -6,9 +6,7 @@
   # Remove firewall task from Packer build
   - firewall
   - docker
-  - cryptography
-  - vagrant
   - consul
   - vault
   - nomad
-  - logging
+  - elastic

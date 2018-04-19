@@ -25,7 +25,13 @@ filebeat.prospectors:
 
   # Paths that should be crawled and fetched. Glob based paths.
   paths:
-    - /var/log/*.log
+  - '/var/lib/docker/containers/*/*.log'
+
+  json.keys_under_root: true
+  json.message_key: log
+
+  processors:
+  - add_docker_metadata: ~
     #- c:\programdata\elasticsearch\logs\*
 
   # Exclude lines. A list of regular expressions to match. It drops the lines that are
