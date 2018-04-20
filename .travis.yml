@@ -1,0 +1,5 @@
+script:
+- docker run -it -v $(pwd):/srv hashicorp/packer:light validate -syntax-only /srv/ubuntu/14.04.5-server-amd64.json
+services:
+- docker
+sudo: required
