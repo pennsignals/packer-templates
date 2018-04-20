@@ -1,3 +1,5 @@
+[![Build Status](https://img.shields.io/travis/pennsignals/packer-templates.svg?style=flat-square)](https://travis-ci.org/pennsignals/packer-templates)
+
 > A phased approach to continuous delivery is not only preferable, it's infinitely more manageable. - [Maurice Kherlakian](https://twitter.com/mkherlakian)
 
 > The most powerful tool we have as developers is automation. - [Scott Hanselman](https://twitter.com/shanselman)
